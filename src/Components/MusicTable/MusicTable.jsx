@@ -49,8 +49,8 @@ function formatDate(string) {
 
 const MusicTable = (props) => {
   return (
-    <table className="table table-striped">
-      <thead>
+    <table id="MusicTable" className="table table-primary table-striped">
+      <thead className="table-dark MusicTableHeader">
         <tr>
           <td>Title</td>
           <td>Artist</td>
@@ -74,7 +74,7 @@ const MusicTable = (props) => {
           );
         })}
       </tbody>
-      <tfoot>
+      <tfoot className="table-dark">
         <tr>
           <td colSpan={6}>Total Playtime: {props.songs.total_running_time}</td>
         </tr>
