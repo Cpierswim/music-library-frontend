@@ -1,0 +1,11 @@
+.custom-width {
+  width: 80%;
+}
+
+.inline {
+  display: flex;
+}
+
+.grow {
+  flex-grow: 8;
+}
