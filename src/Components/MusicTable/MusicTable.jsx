@@ -47,6 +47,22 @@ function formatDate(string) {
   return parts[1] + " " + parts[2] + ", " + parts[0];
 }
 
+function match(searchWord, ...wordsToCheck) {
+  if (searchWord === "") return true;
+  let reg = new RegExp(searchWord, "i");
+  let result = false;
+  for (let i = 0; i < wordsToCheck.length; i++) {
+    let wordToCheck = wordsToCheck[i];
+    let test = wordToCheck.match(reg);
+    if (test != null) {
+      result = true;
+      break;
+    }
+  }
+
+  return result;
+}
+
 const MusicTable = (props) => {
   return (
     <table id="MusicTable" className="table table-primary table-striped">
@@ -61,22 +77,73 @@ const MusicTable = (props) => {
         </tr>
       </thead>
       <tbody>
-        {props.songs.songs.map((song, index) => {
-          return (
-            <tr key={index}>
-              <td>{song.title}</td>
-              <td>{song.artist}</td>
-              <td>{song.album}</td>
-              <td>{formatDate(song.release_date)}</td>
-              <td>{song.genre}</td>
-              <td>{song.likes}</td>
-            </tr>
-          );
-        })}
+        {props.songs
+          .filter((song) => {
+            if (props.searchTerm === "") return true;
+            let words = props.searchTerm.trim().split(" ");
+            let result = false;
+            for (let i = 0; i < words.length; i++) {
+              if (words[i].includes(":")) {
+                let split_colon = words[i].trim().split(":");
+                let category = split_colon[0].toLowerCase();
+                let seachTerm = split_colon[1].toLowerCase();
+                switch (category) {
+                  case "title":
+                  case "t":
+                  case "ti":
+                    result = match(seachTerm, song.title);
+                    break;
+                  case "artist":
+                  case "ar":
+                    result = match(seachTerm, song.artist);
+                    break;
+                  case "album":
+                  case "al":
+                    result = match(seachTerm, song.album);
+                    break;
+                  case "genre":
+                  case "g":
+                  case "ge":
+                    result = match(seachTerm, song.genre);
+                    break;
+                  default:
+                    result = match(
+                      props.searchTerm,
+                      song.title,
+                      song.artist,
+                      song.album,
+                      song.genre
+                    );
+                    break;
+                }
+              } else
+                result = match(
+                  props.searchTerm,
+                  song.title,
+                  song.artist,
+                  song.album,
+                  song.genre
+                );
+            }
+
+            return result;
+          })
+          .map((song) => {
+            return (
+              <tr key={song.id}>
+                <td>{song.title}</td>
+                <td>{song.artist}</td>
+                <td>{song.album}</td>
+                <td>{formatDate(song.release_date)}</td>
+                <td>{song.genre}</td>
+                <td>{song.likes}</td>
+              </tr>
+            );
+          })}
       </tbody>
       <tfoot className="table-dark">
         <tr>
-          <td colSpan={6}>Total Playtime: {props.songs.total_running_time}</td>
+          <td colSpan={6}>Total Playtime: {props.runningTime}</td>
         </tr>
       </tfoot>
     </table>
