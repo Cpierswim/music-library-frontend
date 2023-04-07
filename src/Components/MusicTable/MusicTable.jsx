@@ -99,15 +99,7 @@ function format_seconds(seconds) {
 const MusicTable = (props) => {
   const [computedRuntime, setComputedRuntime] = useState(0);
 
-  function addToComputedRunTime(seconds) {
-    setComputedRuntime(computedRuntime + seconds);
-  }
-
-  function clearComputedRunTime() {
-    setComputedRuntime(0);
-  }
-
-  let testcompute = 0;
+  let calculated_runtime = 0;
 
   return (
     <table id="MusicTable" className="table table-primary table-striped">
@@ -174,7 +166,7 @@ const MusicTable = (props) => {
             return result;
           })
           .map((song) => {
-            testcompute += song.running_time;
+            calculated_runtime += song.running_time;
             return (
               <tr key={song.id}>
                 <td>{song.title}</td>
@@ -189,7 +181,9 @@ const MusicTable = (props) => {
       </tbody>
       <tfoot className="table-dark">
         <tr>
-          <td colSpan={6}>Total Playtime: {format_seconds(testcompute)}</td>
+          <td colSpan={6}>
+            Total Playtime: {format_seconds(calculated_runtime)}
+          </td>
         </tr>
       </tfoot>
     </table>
