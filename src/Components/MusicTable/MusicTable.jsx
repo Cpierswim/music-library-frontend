@@ -109,7 +109,6 @@ const MusicTable = (props) => {
           <td>Album</td>
           <td>Release Date</td>
           <td>Genre</td>
-          <td>likes</td>
         </tr>
       </thead>
       <tbody>
@@ -173,14 +172,13 @@ const MusicTable = (props) => {
                 <td>{song.album}</td>
                 <td>{formatDate(song.release_date)}</td>
                 <td>{song.genre}</td>
-                <td>{song.likes}</td>
               </tr>
             );
           })}
       </tbody>
       <tfoot className="table-dark">
         <tr>
-          <td colSpan={6}>
+          <td colSpan={5}>
             Total Playtime: {format_seconds(calculated_runtime)}
           </td>
         </tr>
