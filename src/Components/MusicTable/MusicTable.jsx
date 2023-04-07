@@ -1,5 +1,6 @@
 import React from "react";
 import "./MusicTable.css";
+import { useState } from "react";
 
 function formatDate(string) {
   let parts = string.split("-");
@@ -63,7 +64,51 @@ function match(searchWord, ...wordsToCheck) {
   return result;
 }
 
+function format_seconds(seconds) {
+  debugger;
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  let hours = Math.floor(minutes / 60);
+  minutes = minutes % 60;
+
+  let return_string = "";
+
+  if (hours > 0) {
+    return_string = hours + ":";
+    if (minutes < 10) {
+      return_string = return_string + "0";
+    }
+    return_string = return_string + minutes + ":";
+    if (seconds < 10) {
+      return_string = return_string + "0";
+    }
+    return_string = return_string + seconds;
+  } else if (hours == 0 && minutes > 0) {
+    return_string = minutes + ":";
+    if (seconds < 10) {
+      return_string = return_string + "0";
+    }
+    return_string = return_string + seconds;
+  } else {
+    return_string = seconds + " seconds";
+  }
+
+  return return_string;
+}
+
 const MusicTable = (props) => {
+  const [computedRuntime, setComputedRuntime] = useState(0);
+
+  function addToComputedRunTime(seconds) {
+    setComputedRuntime(computedRuntime + seconds);
+  }
+
+  function clearComputedRunTime() {
+    setComputedRuntime(0);
+  }
+
+  let testcompute = 0;
+
   return (
     <table id="MusicTable" className="table table-primary table-striped">
       <thead className="table-dark MusicTableHeader">
@@ -129,6 +174,7 @@ const MusicTable = (props) => {
             return result;
           })
           .map((song) => {
+            testcompute += song.running_time;
             return (
               <tr key={song.id}>
                 <td>{song.title}</td>
@@ -143,7 +189,7 @@ const MusicTable = (props) => {
       </tbody>
       <tfoot className="table-dark">
         <tr>
-          <td colSpan={6}>Total Playtime: {props.runningTime}</td>
+          <td colSpan={6}>Total Playtime: {format_seconds(testcompute)}</td>
         </tr>
       </tfoot>
     </table>
