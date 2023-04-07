@@ -65,7 +65,6 @@ function match(searchWord, ...wordsToCheck) {
 }
 
 function format_seconds(seconds) {
-  debugger;
   let minutes = Math.floor(seconds / 60);
   seconds = seconds % 60;
   let hours = Math.floor(minutes / 60);
