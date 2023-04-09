@@ -48,6 +48,7 @@ function formatDate(string) {
   return parts[1] + " " + parts[2] + ", " + parts[0];
 }
 
+/*
 function match(searchWord, ...wordsToCheck) {
   if (searchWord === "") return true;
   let reg = new RegExp(searchWord, "i");
@@ -62,7 +63,7 @@ function match(searchWord, ...wordsToCheck) {
   }
 
   return result;
-}
+}*/
 
 function format_seconds(seconds) {
   let minutes = Math.floor(seconds / 60);
@@ -94,9 +95,10 @@ function format_seconds(seconds) {
 
   return return_string;
 }
-
+/*
 function filterBySearchTerm(song, searchTerm) {
   if (searchTerm === "") return true;
+  debugger;
   let words = searchTerm.trim().split(" ");
   let result = false;
   for (let i = 0; i < words.length; i++) {
@@ -144,6 +146,240 @@ function filterBySearchTerm(song, searchTerm) {
   }
 
   return result;
+}*/
+
+function filterBySearchTerm(song, searchString) {
+  if (searchString === "") return true;
+  //debugger; //do not put a degubber ahead of this.
+  searchString = searchString.toLowerCase();
+  let plusWords = [];
+  let artistSpecial = getSpecialWord(searchString, "+artist");
+  if (artistSpecial) {
+    searchString = removeFromSearchString(searchString, artistSpecial);
+    plusWords.push(artistSpecial);
+  }
+  let titleSpecial = getSpecialWord(searchString, "+title");
+  if (titleSpecial) {
+    searchString = removeFromSearchString(searchString, titleSpecial);
+    plusWords.push(titleSpecial);
+  }
+  let albumnSpecial = getSpecialWord(searchString, "+album");
+  if (albumnSpecial) {
+    searchString = removeFromSearchString(searchString, albumnSpecial);
+    plusWords.push(albumnSpecial);
+  }
+  let genreSpecial = getSpecialWord(searchString, "+genre");
+  if (genreSpecial) {
+    searchString = removeFromSearchString(searchString, genreSpecial);
+    plusWords.push(genreSpecial);
+  }
+
+  let non_special_pluswords = getPlusWords(searchString);
+  //debugger;
+  for (let i = 0; i < non_special_pluswords.length; i++) {
+    let to_remove = non_special_pluswords[i];
+    if (to_remove.includes(" ")) to_remove = '"' + to_remove + '"';
+
+    let temp = removeFromSearchString(searchString, "+" + to_remove);
+    searchString = temp;
+  }
+  plusWords.push(...non_special_pluswords);
+  //debugger;
+
+  //all must have words are now in pluswords, get the optional words
+  let non_pluswords = [];
+  artistSpecial = getSpecialWord(searchString, "artist");
+  if (artistSpecial) {
+    searchString = removeFromSearchString(searchString, artistSpecial);
+    non_pluswords.push(artistSpecial);
+  }
+  titleSpecial = getSpecialWord(searchString, "title");
+  if (titleSpecial) {
+    searchString = removeFromSearchString(searchString, titleSpecial);
+    non_pluswords.push(titleSpecial);
+  }
+  albumnSpecial = getSpecialWord(searchString, "album");
+  if (albumnSpecial) {
+    searchString = removeFromSearchString(searchString, albumnSpecial);
+    non_pluswords.push(albumnSpecial);
+  }
+  genreSpecial = getSpecialWord(searchString, "genre");
+  if (genreSpecial) {
+    searchString = removeFromSearchString(searchString, genreSpecial);
+    non_pluswords.push(genreSpecial);
+  }
+
+  //debugger
+  let temp_non_pluswords = getNonPlusWords(searchString);
+  non_pluswords.push(...temp_non_pluswords);
+
+  //should now have all the words separated
+
+  //for the filter to be true, ALL the pluswords must be true, so every single check must be true
+  let plusWordsResult = [];
+  for (let i = 0; i < plusWords.length; i++) {
+    if (plusWords[i].includes("+artist:")) {
+      //debugger;
+      let checkWord = plusWords[i].replace("+artist:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      plusWordsResult.push(song.artist.toLowerCase().includes(checkWord));
+    } else if (plusWords[i].includes("+title:")) {
+      let checkWord = plusWords[i].replace("+title:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      plusWordsResult.push(song.title.toLowerCase().includes(checkWord));
+    } else if (plusWords[i].includes("+album:")) {
+      let checkWord = plusWords[i].replace("+album:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      plusWordsResult.push(song.album.toLowerCase().includes(checkWord));
+    } else if (plusWords[i].includes("+genre:")) {
+      let checkWord = plusWords[i].replace("+genre:", "");
+      plusWordsResult.push(song.genre.toLowerCase().includes(checkWord));
+      if (plusWordsResult == false) break;
+    } else {
+      //the word we are checking is not any of the special words, so check all of them
+      //but it must be included in one
+      //debugger;
+      let included_in_one =
+        song.artist.toLowerCase().includes(plusWords[i]) ||
+        song.title.toLowerCase().includes(plusWords[i]) ||
+        song.album.toLowerCase().includes(plusWords[i]) ||
+        song.genre.toLowerCase().includes(plusWords[i]);
+      plusWordsResult.push(included_in_one);
+    }
+  }
+
+  //debugger;
+  //for the filter to be true, ANY of the nonpluswords can be true, so it'
+  let nonPlusWordsResult = [];
+  for (let i = 0; i < non_pluswords.length; i++) {
+    if (non_pluswords[i].includes("artist:")) {
+      let checkWord = non_pluswords[i].replace("artist:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      nonPlusWordsResult.push(song.artist.toLowerCase().includes(checkWord));
+    } else if (non_pluswords[i].includes("title:")) {
+      let checkWord = non_pluswords[i].replace("title:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      nonPlusWordsResult.push(song.title.toLowerCase().includes(checkWord));
+    } else if (non_pluswords[i].includes("album:")) {
+      let checkWord = non_pluswords[i].replace("album:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      nonPlusWordsResult.push(song.album.toLowerCase().includes(checkWord));
+    } else if (non_pluswords[i].includes("genre:")) {
+      let checkWord = non_pluswords[i].replace("genre:", "");
+      checkWord = checkWord.replace(/\"/g, "");
+      nonPlusWordsResult.push(song.genre.toLowerCase().includes(checkWord));
+    } else {
+      let included_in_one =
+        song.artist.toLowerCase().includes(non_pluswords[i]) ||
+        song.title.toLowerCase().includes(non_pluswords[i]) ||
+        song.album.toLowerCase().includes(non_pluswords[i]) ||
+        song.genre.toLowerCase().includes(non_pluswords[i]);
+      nonPlusWordsResult.push(included_in_one);
+    }
+  }
+
+  //debugger;
+
+  //if we hit a single false, the whole thing is false
+  for (let i = 0; i < plusWordsResult.length; i++)
+    if (plusWordsResult[i] == false) return false;
+
+  //if we get here, all the plus words are found
+  //now we look through the non plus words, and if a single true is found, the whole thing is true
+  for (let i = 0; i < nonPlusWordsResult.length; i++)
+    if (nonPlusWordsResult[i] == true) return true;
+
+  //we shouldn't ever get here
+}
+
+function getSpecialWord(searchString, specialWord) {
+  specialWord += ":";
+  if (!searchString.includes(specialWord)) return null;
+  let index = searchString.indexOf(specialWord);
+  searchString = searchString.substring(index + specialWord.length);
+  let return_string = "";
+  if (!searchString.includes('"') && !searchString.includes(" "))
+    return_string = specialWord + searchString;
+  else {
+    if (searchString.charAt(0) == '"') {
+      //there's a  full string next
+      searchString = searchString.substring(1);
+      index = searchString.indexOf('"');
+      let beforeQuote = searchString.substring(0, index);
+      return_string = specialWord + '"' + beforeQuote + '"';
+    } else {
+      //there is more after the speicalword: and it could include a " somewhere later, but isn't one right after the :
+      index = searchString.indexOf(" ");
+      let beforeSpace = searchString.substring(0, index);
+      return_string = specialWord + beforeSpace;
+    }
+  }
+  return return_string;
+}
+
+function getPlusWords(searchString) {
+  //debugger;
+  let plusWords = [];
+  if (!searchString.includes("+")) return plusWords;
+  while (searchString.includes("+")) {
+    let indexOfFirstPlus = searchString.indexOf("+");
+    if (searchString.charAt(indexOfFirstPlus + 1) === '"') {
+      //there is a string after the plus
+      //debugger;
+      let quoteIndex = searchString.indexOf('"', indexOfFirstPlus + 2);
+      let plusword = searchString.substring(indexOfFirstPlus + 2, quoteIndex);
+      let before_plus = searchString.substring(0, indexOfFirstPlus);
+      let after_Quote = searchString.substring(quoteIndex + 1);
+      plusWords.push(plusword);
+      searchString = before_plus + after_Quote;
+      searchString.trim();
+    } else {
+      //there is a single word after the plus
+      let spaceIndex = searchString.indexOf(" ", indexOfFirstPlus + 1);
+      if (spaceIndex === -1) {
+        //the plus word is at the end of the string
+        plusWords.push(searchString.substring(indexOfFirstPlus + 1));
+        break;
+      } else {
+        //it's not the last word, so remove it from the string and keep searching
+        let indexOfSpace = searchString.indexOf(" ", indexOfFirstPlus);
+        //debugger;
+        let plusword = searchString.substring(
+          indexOfFirstPlus + 1,
+          indexOfSpace
+        );
+        let before_plus = searchString.substring(0, indexOfFirstPlus);
+        let after_space = searchString.substring(indexOfSpace + 1);
+        plusWords.push(plusword);
+        searchString = before_plus + after_space;
+        searchString = searchString.trim();
+      }
+    }
+
+    searchString = searchString.replace("  ", " ");
+  }
+
+  return plusWords;
+}
+
+function getNonPlusWords(searchString) {
+  //debugger;
+  let split = searchString.split(" ");
+  let return_words = [];
+  for (let i = 0; i < split.length; i++) {
+    //debugger;
+    if (split[i] !== "") {
+      return_words.push(split[i]);
+    }
+  }
+
+  return return_words;
+}
+
+function removeFromSearchString(searchString, wordToRemove) {
+  //debugger;
+  let temp = searchString.replace(wordToRemove, "").trim().replace("  ", " ");
+  return temp;
 }
 
 function getSecondsFromString(timeString) {
@@ -212,14 +448,14 @@ const MusicTable = (props) => {
   }
 
   function setSearchtoArtist(event) {
-    debugger;
+    //debugger;
     const artist_select = document.getElementById("artist_select");
     if (artist_select.value != "Artist")
       props.setSearchTerm("artist:" + artist_select.value);
   }
 
   function setSearchtoGenre(event) {
-    debugger;
+    //debugger;
     const genre_select = document.getElementById("genre_select");
     if (genre_select.value != "Genre")
       props.setSearchTerm("genre:" + genre_select.value);
