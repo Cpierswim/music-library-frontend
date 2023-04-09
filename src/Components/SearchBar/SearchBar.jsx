@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import "./SearchBar.css";
 
 const SearchBar = (props) => {
-  const [searchText, setSearchText] = useState("");
-
   function handleSubmit(event) {
+    let another = props.searchTerm;
     event.preventDefault();
-    props.setSearchTerm(searchText.trim());
-    searchText === ""
+    props.setFilterText(props.searchTerm.trim());
+    props.searchTerm.trim() === ""
       ? props.setDisplayNewSongRow(true)
       : props.setDisplayNewSongRow(false);
   }
@@ -19,12 +18,12 @@ const SearchBar = (props) => {
           <input
             type="text"
             className="form-control custom-width"
-            id="floatingInput"
+            id="floatingInput_searchbar"
             placeholder="Search"
-            value={searchText}
-            onChange={(event) => setSearchText(event.target.value)}
+            value={props.searchTerm}
+            onChange={(event) => props.setSearchTerm(event.target.value)}
           />
-          <label htmlFor="floatingInput">Search</label>
+          <label htmlFor="floatingInput_searchbar">Search</label>
         </div>
         <button type="submit" className="btn btn-primary">
           Search

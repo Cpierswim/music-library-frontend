@@ -147,7 +147,6 @@ function filterBySearchTerm(song, searchTerm) {
 }
 
 function getSecondsFromString(timeString) {
-  debugger;
   let split = timeString.split(":");
   let minutes = 0;
   let seconds = 0;
@@ -159,7 +158,6 @@ function getSecondsFromString(timeString) {
     seconds = parseInt(split[0]);
   }
 
-  debugger;
   return seconds;
 }
 
@@ -213,32 +211,79 @@ const MusicTable = (props) => {
     }
   }
 
+  function setSearchtoArtist(event) {
+    debugger;
+    const artist_select = document.getElementById("artist_select");
+    if (artist_select.value != "Artist")
+      props.setSearchTerm("artist:" + artist_select.value);
+  }
+
+  function setSearchtoGenre(event) {
+    debugger;
+    const genre_select = document.getElementById("genre_select");
+    if (genre_select.value != "Genre")
+      props.setSearchTerm("genre:" + genre_select.value);
+  }
+
   return (
     <form onSubmit={addNewSong}>
       <table id="MusicTable" className="table table-primary table-striped">
         <thead className="table-dark MusicTableHeader">
           <tr>
             <td>Title</td>
-            <td>Artist</td>
+            <td>
+              <select
+                id="artist_select"
+                onChange={setSearchtoArtist}
+                className="form-select header_dropdown"
+                aria-label="Artist Select"
+              >
+                <option selected>Artist</option>
+                {props.artistList.map((artist) => {
+                  return (
+                    <option className="dropdown_item" value={artist}>
+                      {artist}
+                    </option>
+                  );
+                })}
+              </select>
+            </td>
             <td>Album</td>
             <td>Release Date</td>
-            <td>Genre</td>
+            <td>
+              <select
+                id="genre_select"
+                onChange={setSearchtoGenre}
+                className="form-select header_dropdown"
+                aria-label="Genre Select"
+              >
+                <option selected>Genre</option>
+                {props.genreList.map((genre) => {
+                  return (
+                    <option className="dropdown_item" value={genre}>
+                      {genre}
+                    </option>
+                  );
+                })}
+              </select>
+            </td>
             <td>Run Time</td>
             <td></td>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="songsList">
           {props.songs
-            .filter((song) => filterBySearchTerm(song, props.searchTerm))
+            .filter((song) => filterBySearchTerm(song, props.filterText))
             .map((song) => {
               calculated_runtime += song.running_time;
+
               return (
                 <tr key={song.id}>
                   <td>{song.title}</td>
-                  <td>{song.artist}</td>
+                  <td id={song.id + "_artist"}>{song.artist}</td>
                   <td>{song.album}</td>
                   <td>{formatDate(song.release_date)}</td>
-                  <td>{song.genre}</td>
+                  <td id={song.id + "_genre"}>{song.genre}</td>
                   <td>{format_seconds(song.running_time)}</td>
                   <td></td>
                 </tr>
@@ -307,7 +352,7 @@ const MusicTable = (props) => {
                     width="16"
                     height="16"
                     fill="currentColor"
-                    class="bi bi-file-earmark-plus"
+                    className="bi bi-file-earmark-plus"
                     viewBox="0 0 16 16"
                   >
                     <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"></path>

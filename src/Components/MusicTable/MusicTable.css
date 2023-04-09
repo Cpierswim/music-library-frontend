@@ -24,3 +24,27 @@
   padding-right: 15px;
   padding-bottom: 12px;
 }
+
+.remove_button_background {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+.header_dropdown {
+  background-color: rgba(255, 255, 255, 0);
+  color: inherit;
+  text-transform: inherit;
+  text-align: center;
+  font-size: inherit;
+  width: 100%;
+}
+
+.dropdown_item {
+  color: black;
+  text-align: left;
+  width: 600px;
+}
