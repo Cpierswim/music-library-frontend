@@ -451,14 +451,14 @@ const MusicTable = (props) => {
     //debugger;
     const artist_select = document.getElementById("artist_select");
     if (artist_select.value != "Artist")
-      props.setSearchTerm("artist:" + artist_select.value);
+      props.setSearchTerm("+artist:" + artist_select.value);
   }
 
   function setSearchtoGenre(event) {
     //debugger;
     const genre_select = document.getElementById("genre_select");
     if (genre_select.value != "Genre")
-      props.setSearchTerm("genre:" + genre_select.value);
+      props.setSearchTerm("+genre:" + genre_select.value);
   }
 
   return (
