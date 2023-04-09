@@ -213,7 +213,7 @@ function filterBySearchTerm(song, searchString) {
   for (let i = 0; i < nonPlusWordsResult.length; i++)
     if (nonPlusWordsResult[i] == true) return true;
 
-  //we shouldn't ever get here
+  return true;
 }
 
 function getSpecialWord(searchString, specialWord) {
@@ -368,13 +368,17 @@ const MusicTable = (props) => {
   function setSearchtoArtist(event) {
     const artist_select = document.getElementById("artist_select");
     if (artist_select.value != "Artist")
-      props.setSearchTerm("+artist:" + artist_select.value);
+      props.setSearchTerm(
+        (props.searchTerm + ' +artist:"' + artist_select.value + '"').trim()
+      );
   }
 
   function setSearchtoGenre(event) {
     const genre_select = document.getElementById("genre_select");
     if (genre_select.value != "Genre")
-      props.setSearchTerm("+genre:" + genre_select.value);
+      props.setSearchTerm(
+        (props.searchTerm + ' +genre:"' + genre_select.value + '"').trim()
+      );
   }
 
   return (
