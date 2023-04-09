@@ -146,12 +146,30 @@ function filterBySearchTerm(song, searchTerm) {
   return result;
 }
 
+function getSecondsFromString(timeString) {
+  debugger;
+  let split = timeString.split(":");
+  let minutes = 0;
+  let seconds = 0;
+  if (split.length == 2) {
+    minutes = parseInt(split[0]);
+    seconds = parseInt(split[1]);
+    seconds += minutes * 60;
+  } else if (split.length == 1) {
+    seconds = parseInt(split[0]);
+  }
+
+  debugger;
+  return seconds;
+}
+
 const MusicTable = (props) => {
   const [newTitle, setNewTitle] = useState("");
   const [newAlbumName, setNewAlbumName] = useState("");
   const [newArtist, setNewArtist] = useState("");
   const [newGenre, setNewGenre] = useState("");
   const [newReleaseDate, setNewReleaseDate] = useState("");
+  const [newRunningTime, setNewRunningTime] = useState("");
 
   let calculated_runtime = 0;
 
@@ -162,13 +180,15 @@ const MusicTable = (props) => {
     setNewArtist(newArtist.trim());
     setNewGenre(newGenre.trim());
     setNewReleaseDate(newReleaseDate.trim());
+    setNewRunningTime(newRunningTime.trim());
 
     if (
       newTitle !== "" &&
       newArtist !== "" &&
       newAlbumName !== "" &&
       newGenre !== "" &&
-      newReleaseDate !== ""
+      newReleaseDate !== "" &&
+      newRunningTime !== ""
     ) {
       let song = {
         title: newTitle,
@@ -176,7 +196,7 @@ const MusicTable = (props) => {
         album: newAlbumName,
         release_date: newReleaseDate,
         genre: newGenre,
-        running_time: 0,
+        running_time: getSecondsFromString(newRunningTime),
       };
 
       let result = props.addNewSong(song);
@@ -187,6 +207,7 @@ const MusicTable = (props) => {
         setNewArtist("");
         setNewGenre("");
         setNewReleaseDate("");
+        setNewRunningTime("");
         props.refreshSongList();
       });
     }
@@ -202,6 +223,7 @@ const MusicTable = (props) => {
             <td>Album</td>
             <td>Release Date</td>
             <td>Genre</td>
+            <td>Run Time</td>
             <td></td>
           </tr>
         </thead>
@@ -217,6 +239,7 @@ const MusicTable = (props) => {
                   <td>{song.album}</td>
                   <td>{formatDate(song.release_date)}</td>
                   <td>{song.genre}</td>
+                  <td>{format_seconds(song.running_time)}</td>
                   <td></td>
                 </tr>
               );
@@ -269,6 +292,15 @@ const MusicTable = (props) => {
                 ></input>
               </td>
               <td>
+                <input
+                  id="newRunTime"
+                  value={newRunningTime}
+                  type="text"
+                  onChange={(event) => setNewRunningTime(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
                 <button type="submit" className="btn btn-primary addButton">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +320,7 @@ const MusicTable = (props) => {
         </tbody>
         <tfoot className="table-dark">
           <tr>
-            <td colSpan={6}>
+            <td colSpan={7}>
               Total Playtime: {format_seconds(calculated_runtime)}
             </td>
           </tr>
