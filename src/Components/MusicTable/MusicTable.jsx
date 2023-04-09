@@ -469,12 +469,13 @@ const MusicTable = (props) => {
             <td>Title</td>
             <td>
               <select
+                defaultValue={"Artist"}
                 id="artist_select"
                 onChange={setSearchtoArtist}
                 className="form-select header_dropdown"
                 aria-label="Artist Select"
               >
-                <option selected>Artist</option>
+                <option value="Artist">Artist</option>
                 {props.artistList.map((artist) => {
                   return (
                     <option className="dropdown_item" value={artist}>
@@ -488,12 +489,13 @@ const MusicTable = (props) => {
             <td>Release Date</td>
             <td>
               <select
+                defaultValue={"Genre"}
                 id="genre_select"
                 onChange={setSearchtoGenre}
                 className="form-select header_dropdown"
                 aria-label="Genre Select"
               >
-                <option selected>Genre</option>
+                <option value="Genre">Genre</option>
                 {props.genreList.map((genre) => {
                   return (
                     <option className="dropdown_item" value={genre}>
