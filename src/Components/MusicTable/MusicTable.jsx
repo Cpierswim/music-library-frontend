@@ -205,15 +205,14 @@ function filterBySearchTerm(song, searchString) {
   }
 
   //if we hit a single false, the whole thing is false
-  for (let i = 0; i < plusWordsResult.length; i++)
-    if (plusWordsResult[i] == false) return false;
+  if (plusWordsResult.includes(false)) return false;
 
   //if we get here, all the plus words are found
   //now we look through the non plus words, and if a single true is found, the whole thing is true
-  for (let i = 0; i < nonPlusWordsResult.length; i++)
-    if (nonPlusWordsResult[i] == true) return true;
+  if (nonPlusWordsResult.includes(true)) return true;
 
-  return true;
+  //if we got here, then all of the plus words are true, but none of the nonplus words are, so we return false
+  return false;
 }
 
 function getSpecialWord(searchString, specialWord) {
