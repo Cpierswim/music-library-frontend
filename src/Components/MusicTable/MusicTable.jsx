@@ -79,6 +79,25 @@ function format_seconds(seconds) {
   return return_string;
 }
 
+function getSecondsFromString(timeString) {
+  let split = timeString.split(":");
+  let minutes = 0;
+  let seconds = 0;
+  if (split.length == 2) {
+    minutes = parseInt(split[0]);
+    seconds = parseInt(split[1]);
+    seconds += minutes * 60;
+  } else if (split.length == 1) {
+    seconds = parseInt(split[0]);
+  }
+
+  return seconds;
+}
+
+//-------------------------------------------
+// ALL FUNCTIONS BELOW THIS ARE JUST USED
+// IN FILTERING A ROW
+//-------------------------------------------
 function filterBySearchTerm(song, searchString) {
   if (searchString === "") return true;
   //debugger; //do not put a degubber ahead of this.
@@ -297,21 +316,6 @@ function getNonPlusWords(searchString) {
 function removeFromSearchString(searchString, wordToRemove) {
   let temp = searchString.replace(wordToRemove, "").trim().replace("  ", " ");
   return temp;
-}
-
-function getSecondsFromString(timeString) {
-  let split = timeString.split(":");
-  let minutes = 0;
-  let seconds = 0;
-  if (split.length == 2) {
-    minutes = parseInt(split[0]);
-    seconds = parseInt(split[1]);
-    seconds += minutes * 60;
-  } else if (split.length == 1) {
-    seconds = parseInt(split[0]);
-  }
-
-  return seconds;
 }
 
 const MusicTable = (props) => {
