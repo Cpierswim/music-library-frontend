@@ -95,95 +95,186 @@ function format_seconds(seconds) {
   return return_string;
 }
 
+function filterBySearchTerm(song, searchTerm) {
+  if (searchTerm === "") return true;
+  let words = searchTerm.trim().split(" ");
+  let result = false;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].includes(":")) {
+      let split_colon = words[i].trim().split(":");
+      let category = split_colon[0].toLowerCase();
+      let seachTerm = split_colon[1].toLowerCase();
+      switch (category) {
+        case "title":
+        case "t":
+        case "ti":
+          result = match(seachTerm, song.title);
+          break;
+        case "artist":
+        case "ar":
+          result = match(seachTerm, song.artist);
+          break;
+        case "album":
+        case "al":
+          result = match(seachTerm, song.album);
+          break;
+        case "genre":
+        case "g":
+        case "ge":
+          result = match(seachTerm, song.genre);
+          break;
+        default:
+          result = match(
+            searchTerm,
+            song.title,
+            song.artist,
+            song.album,
+            song.genre
+          );
+          break;
+      }
+    } else
+      result = match(
+        searchTerm,
+        song.title,
+        song.artist,
+        song.album,
+        song.genre
+      );
+  }
+
+  return result;
+}
+
 const MusicTable = (props) => {
-  const [computedRuntime, setComputedRuntime] = useState(0);
+  const [newTitle, setNewTitle] = useState("");
+  const [newAlbumName, setNewAlbumName] = useState("");
+  const [newArtist, setNewArtist] = useState("");
+  const [newGenre, setNewGenre] = useState("");
+  const [newReleaseDate, setNewReleaseDate] = useState("");
 
   let calculated_runtime = 0;
 
-  return (
-    <table id="MusicTable" className="table table-primary table-striped">
-      <thead className="table-dark MusicTableHeader">
-        <tr>
-          <td>Title</td>
-          <td>Artist</td>
-          <td>Album</td>
-          <td>Release Date</td>
-          <td>Genre</td>
-        </tr>
-      </thead>
-      <tbody>
-        {props.songs
-          .filter((song) => {
-            if (props.searchTerm === "") return true;
-            let words = props.searchTerm.trim().split(" ");
-            let result = false;
-            for (let i = 0; i < words.length; i++) {
-              if (words[i].includes(":")) {
-                let split_colon = words[i].trim().split(":");
-                let category = split_colon[0].toLowerCase();
-                let seachTerm = split_colon[1].toLowerCase();
-                switch (category) {
-                  case "title":
-                  case "t":
-                  case "ti":
-                    result = match(seachTerm, song.title);
-                    break;
-                  case "artist":
-                  case "ar":
-                    result = match(seachTerm, song.artist);
-                    break;
-                  case "album":
-                  case "al":
-                    result = match(seachTerm, song.album);
-                    break;
-                  case "genre":
-                  case "g":
-                  case "ge":
-                    result = match(seachTerm, song.genre);
-                    break;
-                  default:
-                    result = match(
-                      props.searchTerm,
-                      song.title,
-                      song.artist,
-                      song.album,
-                      song.genre
-                    );
-                    break;
-                }
-              } else
-                result = match(
-                  props.searchTerm,
-                  song.title,
-                  song.artist,
-                  song.album,
-                  song.genre
-                );
-            }
+  function addNewSong(event) {
+    event.preventDefault();
+    setNewTitle(newTitle.trim());
+    setNewAlbumName(newAlbumName.trim());
+    setNewArtist(newArtist.trim());
+    setNewGenre(newGenre.trim());
+    setNewReleaseDate(newReleaseDate.trim());
 
-            return result;
-          })
-          .map((song) => {
-            calculated_runtime += song.running_time;
-            return (
-              <tr key={song.id}>
-                <td>{song.title}</td>
-                <td>{song.artist}</td>
-                <td>{song.album}</td>
-                <td>{formatDate(song.release_date)}</td>
-                <td>{song.genre}</td>
-              </tr>
-            );
-          })}
-      </tbody>
-      <tfoot className="table-dark">
-        <tr>
-          <td colSpan={5}>
-            Total Playtime: {format_seconds(calculated_runtime)}
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+    if (
+      newTitle !== "" &&
+      newArtist !== "" &&
+      newAlbumName !== "" &&
+      newGenre !== "" &&
+      newReleaseDate !== ""
+    ) {
+      let song = {
+        title: newTitle,
+        artist: newArtist,
+        album: newAlbumName,
+        release_date: newReleaseDate,
+        genre: newGenre,
+        running_time: 0,
+      };
+
+      let result = props.addNewSong(song);
+
+      result.then((value) => {
+        setNewTitle("");
+        setNewAlbumName("");
+        setNewArtist("");
+        setNewGenre("");
+        setNewReleaseDate("");
+      });
+    }
+  }
+
+  return (
+    <form onSubmit={addNewSong}>
+      <table id="MusicTable" className="table table-primary table-striped">
+        <thead className="table-dark MusicTableHeader">
+          <tr>
+            <td>Title</td>
+            <td>Artist</td>
+            <td>Album</td>
+            <td>Release Date</td>
+            <td>Genre</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          {props.songs
+            .filter((song) => filterBySearchTerm(song, props.searchTerm))
+            .map((song) => {
+              calculated_runtime += song.running_time;
+              return (
+                <tr key={song.id}>
+                  <td>{song.title}</td>
+                  <td>{song.artist}</td>
+                  <td>{song.album}</td>
+                  <td>{formatDate(song.release_date)}</td>
+                  <td>{song.genre}</td>
+                  <td></td>
+                </tr>
+              );
+            })}
+          <tr>
+            <td>
+              <input
+                id="newTitle"
+                value={newTitle}
+                type="text"
+                onChange={(event) => setNewTitle(event.target.value)}
+              ></input>
+            </td>
+            <td>
+              <input
+                id="newArtist"
+                value={newArtist}
+                type="text"
+                onChange={(event) => setNewArtist(event.target.value)}
+              ></input>
+            </td>
+            <td>
+              <input
+                id="newAlbum"
+                value={newAlbumName}
+                type="text"
+                onChange={(event) => setNewAlbumName(event.target.value)}
+              ></input>
+            </td>
+            <td>
+              <input
+                id="newReleaseDate"
+                value={newReleaseDate}
+                type="date"
+                onChange={(event) => setNewReleaseDate(event.target.value)}
+              ></input>
+            </td>
+            <td>
+              <input
+                id="newGenre"
+                value={newGenre}
+                type="text"
+                onChange={(event) => setNewGenre(event.target.value)}
+              ></input>
+            </td>
+            <td>
+              <button type="submit">Add</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot className="table-dark">
+          <tr>
+            <td colSpan={6}>
+              Total Playtime: {format_seconds(calculated_runtime)}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </form>
   );
 };
 

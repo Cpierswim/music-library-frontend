@@ -19,6 +19,11 @@ function App() {
     setRunningTime(response.data.total_running_time);
   }
 
+  async function addNewSong(song) {
+    let response = await axios.post("http://127.0.0.1:5000/api/songs", song);
+    return response;
+  }
+
   return (
     <div className="App">
       <SearchBar setSearchTerm={setSearchTerm} />
@@ -26,6 +31,7 @@ function App() {
         songs={songs}
         runningTime={runningTime}
         searchTerm={searchTerm}
+        addNewSong={addNewSong}
       />
     </div>
   );
