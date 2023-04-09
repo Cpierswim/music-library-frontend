@@ -48,23 +48,6 @@ function formatDate(string) {
   return parts[1] + " " + parts[2] + ", " + parts[0];
 }
 
-/*
-function match(searchWord, ...wordsToCheck) {
-  if (searchWord === "") return true;
-  let reg = new RegExp(searchWord, "i");
-  let result = false;
-  for (let i = 0; i < wordsToCheck.length; i++) {
-    let wordToCheck = wordsToCheck[i];
-    let test = wordToCheck.match(reg);
-    if (test != null) {
-      result = true;
-      break;
-    }
-  }
-
-  return result;
-}*/
-
 function format_seconds(seconds) {
   let minutes = Math.floor(seconds / 60);
   seconds = seconds % 60;
@@ -95,58 +78,6 @@ function format_seconds(seconds) {
 
   return return_string;
 }
-/*
-function filterBySearchTerm(song, searchTerm) {
-  if (searchTerm === "") return true;
-  debugger;
-  let words = searchTerm.trim().split(" ");
-  let result = false;
-  for (let i = 0; i < words.length; i++) {
-    if (words[i].includes(":")) {
-      let split_colon = words[i].trim().split(":");
-      let category = split_colon[0].toLowerCase();
-      let seachTerm = split_colon[1].toLowerCase();
-      switch (category) {
-        case "title":
-        case "t":
-        case "ti":
-          result = match(seachTerm, song.title);
-          break;
-        case "artist":
-        case "ar":
-          result = match(seachTerm, song.artist);
-          break;
-        case "album":
-        case "al":
-          result = match(seachTerm, song.album);
-          break;
-        case "genre":
-        case "g":
-        case "ge":
-          result = match(seachTerm, song.genre);
-          break;
-        default:
-          result = match(
-            searchTerm,
-            song.title,
-            song.artist,
-            song.album,
-            song.genre
-          );
-          break;
-      }
-    } else
-      result = match(
-        searchTerm,
-        song.title,
-        song.artist,
-        song.album,
-        song.genre
-      );
-  }
-
-  return result;
-}*/
 
 function filterBySearchTerm(song, searchString) {
   if (searchString === "") return true;
@@ -175,7 +106,7 @@ function filterBySearchTerm(song, searchString) {
   }
 
   let non_special_pluswords = getPlusWords(searchString);
-  //debugger;
+
   for (let i = 0; i < non_special_pluswords.length; i++) {
     let to_remove = non_special_pluswords[i];
     if (to_remove.includes(" ")) to_remove = '"' + to_remove + '"';
@@ -184,7 +115,6 @@ function filterBySearchTerm(song, searchString) {
     searchString = temp;
   }
   plusWords.push(...non_special_pluswords);
-  //debugger;
 
   //all must have words are now in pluswords, get the optional words
   let non_pluswords = [];
@@ -209,7 +139,6 @@ function filterBySearchTerm(song, searchString) {
     non_pluswords.push(genreSpecial);
   }
 
-  //debugger
   let temp_non_pluswords = getNonPlusWords(searchString);
   non_pluswords.push(...temp_non_pluswords);
 
@@ -219,7 +148,6 @@ function filterBySearchTerm(song, searchString) {
   let plusWordsResult = [];
   for (let i = 0; i < plusWords.length; i++) {
     if (plusWords[i].includes("+artist:")) {
-      //debugger;
       let checkWord = plusWords[i].replace("+artist:", "");
       checkWord = checkWord.replace(/\"/g, "");
       plusWordsResult.push(song.artist.toLowerCase().includes(checkWord));
@@ -238,7 +166,6 @@ function filterBySearchTerm(song, searchString) {
     } else {
       //the word we are checking is not any of the special words, so check all of them
       //but it must be included in one
-      //debugger;
       let included_in_one =
         song.artist.toLowerCase().includes(plusWords[i]) ||
         song.title.toLowerCase().includes(plusWords[i]) ||
@@ -248,7 +175,6 @@ function filterBySearchTerm(song, searchString) {
     }
   }
 
-  //debugger;
   //for the filter to be true, ANY of the nonpluswords can be true, so it'
   let nonPlusWordsResult = [];
   for (let i = 0; i < non_pluswords.length; i++) {
@@ -277,8 +203,6 @@ function filterBySearchTerm(song, searchString) {
       nonPlusWordsResult.push(included_in_one);
     }
   }
-
-  //debugger;
 
   //if we hit a single false, the whole thing is false
   for (let i = 0; i < plusWordsResult.length; i++)
@@ -318,14 +242,12 @@ function getSpecialWord(searchString, specialWord) {
 }
 
 function getPlusWords(searchString) {
-  //debugger;
   let plusWords = [];
   if (!searchString.includes("+")) return plusWords;
   while (searchString.includes("+")) {
     let indexOfFirstPlus = searchString.indexOf("+");
     if (searchString.charAt(indexOfFirstPlus + 1) === '"') {
       //there is a string after the plus
-      //debugger;
       let quoteIndex = searchString.indexOf('"', indexOfFirstPlus + 2);
       let plusword = searchString.substring(indexOfFirstPlus + 2, quoteIndex);
       let before_plus = searchString.substring(0, indexOfFirstPlus);
@@ -343,7 +265,6 @@ function getPlusWords(searchString) {
       } else {
         //it's not the last word, so remove it from the string and keep searching
         let indexOfSpace = searchString.indexOf(" ", indexOfFirstPlus);
-        //debugger;
         let plusword = searchString.substring(
           indexOfFirstPlus + 1,
           indexOfSpace
@@ -363,11 +284,9 @@ function getPlusWords(searchString) {
 }
 
 function getNonPlusWords(searchString) {
-  //debugger;
   let split = searchString.split(" ");
   let return_words = [];
   for (let i = 0; i < split.length; i++) {
-    //debugger;
     if (split[i] !== "") {
       return_words.push(split[i]);
     }
@@ -377,7 +296,6 @@ function getNonPlusWords(searchString) {
 }
 
 function removeFromSearchString(searchString, wordToRemove) {
-  //debugger;
   let temp = searchString.replace(wordToRemove, "").trim().replace("  ", " ");
   return temp;
 }
@@ -448,14 +366,12 @@ const MusicTable = (props) => {
   }
 
   function setSearchtoArtist(event) {
-    //debugger;
     const artist_select = document.getElementById("artist_select");
     if (artist_select.value != "Artist")
       props.setSearchTerm("+artist:" + artist_select.value);
   }
 
   function setSearchtoGenre(event) {
-    //debugger;
     const genre_select = document.getElementById("genre_select");
     if (genre_select.value != "Genre")
       props.setSearchTerm("+genre:" + genre_select.value);
@@ -478,7 +394,11 @@ const MusicTable = (props) => {
                 <option value="Artist">Artist</option>
                 {props.artistList.map((artist) => {
                   return (
-                    <option className="dropdown_item" value={artist}>
+                    <option
+                      key={artist}
+                      className="dropdown_item"
+                      value={artist}
+                    >
                       {artist}
                     </option>
                   );
@@ -498,7 +418,7 @@ const MusicTable = (props) => {
                 <option value="Genre">Genre</option>
                 {props.genreList.map((genre) => {
                   return (
-                    <option className="dropdown_item" value={genre}>
+                    <option key={genre} className="dropdown_item" value={genre}>
                       {genre}
                     </option>
                   );
