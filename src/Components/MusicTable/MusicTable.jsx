@@ -187,6 +187,7 @@ const MusicTable = (props) => {
         setNewArtist("");
         setNewGenre("");
         setNewReleaseDate("");
+        props.refreshSongList();
       });
     }
   }
@@ -220,51 +221,53 @@ const MusicTable = (props) => {
                 </tr>
               );
             })}
-          <tr>
-            <td>
-              <input
-                id="newTitle"
-                value={newTitle}
-                type="text"
-                onChange={(event) => setNewTitle(event.target.value)}
-              ></input>
-            </td>
-            <td>
-              <input
-                id="newArtist"
-                value={newArtist}
-                type="text"
-                onChange={(event) => setNewArtist(event.target.value)}
-              ></input>
-            </td>
-            <td>
-              <input
-                id="newAlbum"
-                value={newAlbumName}
-                type="text"
-                onChange={(event) => setNewAlbumName(event.target.value)}
-              ></input>
-            </td>
-            <td>
-              <input
-                id="newReleaseDate"
-                value={newReleaseDate}
-                type="date"
-                onChange={(event) => setNewReleaseDate(event.target.value)}
-              ></input>
-            </td>
-            <td>
-              <input
-                id="newGenre"
-                value={newGenre}
-                type="text"
-                onChange={(event) => setNewGenre(event.target.value)}
-              ></input>
-            </td>
-            <td>
-              <button type="submit">Add</button>
-            </td>
-          </tr>
+          {props.displayNewSongRow ? (
+            <tr>
+              <td>
+                <input
+                  id="newTitle"
+                  value={newTitle}
+                  type="text"
+                  onChange={(event) => setNewTitle(event.target.value)}
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newArtist"
+                  value={newArtist}
+                  type="text"
+                  onChange={(event) => setNewArtist(event.target.value)}
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newAlbum"
+                  value={newAlbumName}
+                  type="text"
+                  onChange={(event) => setNewAlbumName(event.target.value)}
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newReleaseDate"
+                  value={newReleaseDate}
+                  type="date"
+                  onChange={(event) => setNewReleaseDate(event.target.value)}
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newGenre"
+                  value={newGenre}
+                  type="text"
+                  onChange={(event) => setNewGenre(event.target.value)}
+                ></input>
+              </td>
+              <td>
+                <button type="submit">Add</button>
+              </td>
+            </tr>
+          ) : null}
         </tbody>
         <tfoot className="table-dark">
           <tr>

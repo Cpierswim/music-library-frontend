@@ -6,7 +6,10 @@ const SearchBar = (props) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    props.setSearchTerm(searchText);
+    props.setSearchTerm(searchText.trim());
+    searchText === ""
+      ? props.setDisplayNewSongRow(true)
+      : props.setDisplayNewSongRow(false);
   }
 
   return (

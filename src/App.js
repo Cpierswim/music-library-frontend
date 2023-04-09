@@ -8,12 +8,19 @@ function App() {
   const [songs, setSongs] = useState([]);
   const [runningTime, setRunningTime] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [displayNewSongRow, setDisplayNewSongRow] = useState(true);
 
   useEffect(() => {
     getAllSongs();
   }, []);
 
   async function getAllSongs() {
+    let response = await axios.get("http://127.0.0.1:5000/api/songs");
+    setSongs(response.data.songs);
+    setRunningTime(response.data.total_running_time);
+  }
+
+  async function refreshSongList() {
     let response = await axios.get("http://127.0.0.1:5000/api/songs");
     setSongs(response.data.songs);
     setRunningTime(response.data.total_running_time);
@@ -26,12 +33,18 @@ function App() {
 
   return (
     <div className="App">
-      <SearchBar setSearchTerm={setSearchTerm} />
+      <SearchBar
+        setSearchTerm={setSearchTerm}
+        displayNewSongRow={displayNewSongRow}
+        setDisplayNewSongRow={setDisplayNewSongRow}
+      />
       <MusicTable
         songs={songs}
         runningTime={runningTime}
         searchTerm={searchTerm}
         addNewSong={addNewSong}
+        refreshSongList={refreshSongList}
+        displayNewSongRow={displayNewSongRow}
       />
     </div>
   );
