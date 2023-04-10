@@ -2,6 +2,7 @@ import React from "react";
 import "./MusicTable.css";
 import { useState } from "react";
 import { ReactComponent as EditIcon } from "./edit.svg";
+import { ReactComponent as CancelIcon } from "./cancel.svg";
 
 function formatDate(string) {
   let parts = string.split("-");
@@ -349,6 +350,9 @@ const MusicTable = (props) => {
       case "delete":
         deleteSong(event);
         break;
+      case "cancel":
+        cancelUpdate(event);
+        break;
       default:
         break;
     }
@@ -445,6 +449,19 @@ const MusicTable = (props) => {
       setUpdateRunningTime("");
       props.refreshSongList();
     });
+  }
+
+  function cancelUpdate(event) {
+    event.preventDefault();
+    setDisplayingUpdate(false);
+    setUpdateIndex(0);
+    setUpdateTitle("");
+    setUpdateAlbumName("");
+    setUpdateArtist("");
+    setUpdateGenre("");
+    setUpdateReleaseDate("");
+    setUpdateRunningTime("");
+    props.refreshSongList();
   }
 
   function setSearchtoArtist(event) {
@@ -559,8 +576,9 @@ const MusicTable = (props) => {
                   <td id={song.running_time}>
                     {format_seconds(song.running_time)}
                   </td>
-                  <td className="icon_TD">
+                  <td>
                     <EditIcon
+                      className="icon_TD"
                       id={song.id}
                       song_id={song.id}
                       onClick={(event) => changeRowToUpdate(event)}
@@ -629,9 +647,16 @@ const MusicTable = (props) => {
                       required
                     ></input>
                   </td>
-                  <td>
-                    <button value="update">Update</button>
-                    <button value="delete">Delete</button>
+                  <td className="buttonColumn">
+                    <button className="btn btn-primary" value="update">
+                      Update
+                    </button>
+                    <button className="btn btn-primary" value="delete">
+                      Delete
+                    </button>
+                    <button className="btn btn-primary" value="cancel">
+                      <CancelIcon />
+                    </button>
                   </td>
                 </tr>
               );
