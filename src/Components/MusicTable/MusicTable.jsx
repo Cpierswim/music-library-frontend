@@ -1,6 +1,7 @@
 import React from "react";
 import "./MusicTable.css";
 import { useState } from "react";
+import { ReactComponent as EditIcon } from "./edit.svg";
 
 function formatDate(string) {
   let parts = string.split("-");
@@ -66,7 +67,7 @@ function format_seconds(seconds) {
       return_string = return_string + "0";
     }
     return_string = return_string + seconds;
-  } else if (hours == 0 && minutes > 0) {
+  } else if (hours === 0 && minutes > 0) {
     return_string = minutes + ":";
     if (seconds < 10) {
       return_string = return_string + "0";
@@ -83,11 +84,11 @@ function getSecondsFromString(timeString) {
   let split = timeString.split(":");
   let minutes = 0;
   let seconds = 0;
-  if (split.length == 2) {
+  if (split.length === 2) {
     minutes = parseInt(split[0]);
     seconds = parseInt(split[1]);
     seconds += minutes * 60;
-  } else if (split.length == 1) {
+  } else if (split.length === 1) {
     seconds = parseInt(split[0]);
   }
 
@@ -168,20 +169,20 @@ function filterBySearchTerm(song, searchString) {
   for (let i = 0; i < plusWords.length; i++) {
     if (plusWords[i].includes("+artist:")) {
       let checkWord = plusWords[i].replace("+artist:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       plusWordsResult.push(song.artist.toLowerCase().includes(checkWord));
     } else if (plusWords[i].includes("+title:")) {
       let checkWord = plusWords[i].replace("+title:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       plusWordsResult.push(song.title.toLowerCase().includes(checkWord));
     } else if (plusWords[i].includes("+album:")) {
       let checkWord = plusWords[i].replace("+album:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       plusWordsResult.push(song.album.toLowerCase().includes(checkWord));
     } else if (plusWords[i].includes("+genre:")) {
       let checkWord = plusWords[i].replace("+genre:", "");
       plusWordsResult.push(song.genre.toLowerCase().includes(checkWord));
-      if (plusWordsResult == false) break;
+      if (plusWordsResult === false) break;
     } else {
       //the word we are checking is not any of the special words, so check all of them
       //but it must be included in one
@@ -199,19 +200,19 @@ function filterBySearchTerm(song, searchString) {
   for (let i = 0; i < non_pluswords.length; i++) {
     if (non_pluswords[i].includes("artist:")) {
       let checkWord = non_pluswords[i].replace("artist:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       nonPlusWordsResult.push(song.artist.toLowerCase().includes(checkWord));
     } else if (non_pluswords[i].includes("title:")) {
       let checkWord = non_pluswords[i].replace("title:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       nonPlusWordsResult.push(song.title.toLowerCase().includes(checkWord));
     } else if (non_pluswords[i].includes("album:")) {
       let checkWord = non_pluswords[i].replace("album:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       nonPlusWordsResult.push(song.album.toLowerCase().includes(checkWord));
     } else if (non_pluswords[i].includes("genre:")) {
       let checkWord = non_pluswords[i].replace("genre:", "");
-      checkWord = checkWord.replace(/\"/g, "");
+      checkWord = checkWord.replace(/"/g, "");
       nonPlusWordsResult.push(song.genre.toLowerCase().includes(checkWord));
     } else {
       let included_in_one =
@@ -231,7 +232,7 @@ function filterBySearchTerm(song, searchString) {
   if (nonPlusWordsResult.includes(true)) return true;
 
   //if we got here, then all of the plus words are true, but none of the nonplus words are, so we return false
-  return false;
+  return true;
 }
 
 function getSpecialWord(searchString, specialWord) {
@@ -243,7 +244,7 @@ function getSpecialWord(searchString, specialWord) {
   if (!searchString.includes('"') && !searchString.includes(" "))
     return_string = specialWord + searchString;
   else {
-    if (searchString.charAt(0) == '"') {
+    if (searchString.charAt(0) === '"') {
       //there's a  full string next
       searchString = searchString.substring(1);
       index = searchString.indexOf('"');
@@ -319,14 +320,39 @@ function removeFromSearchString(searchString, wordToRemove) {
 }
 
 const MusicTable = (props) => {
+  const [displayingUpdate, setDisplayingUpdate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newAlbumName, setNewAlbumName] = useState("");
   const [newArtist, setNewArtist] = useState("");
   const [newGenre, setNewGenre] = useState("");
   const [newReleaseDate, setNewReleaseDate] = useState("");
   const [newRunningTime, setNewRunningTime] = useState("");
+  const [updateIndex, setUpdateIndex] = useState(0);
+  const [updateTitle, setUpdateTitle] = useState("");
+  const [updateArist, setUpdateArtist] = useState("");
+  const [updateAlbumnName, setUpdateAlbumName] = useState("");
+  const [updateGenre, setUpdateGenre] = useState("");
+  const [updateReleaseDate, setUpdateReleaseDate] = useState("");
+  const [updateRunningTime, setUpdateRunningTime] = useState("");
 
   let calculated_runtime = 0;
+
+  function handleSubmit(event) {
+    let action = event.nativeEvent.submitter.value;
+    switch (action) {
+      case "add":
+        addNewSong(event);
+        break;
+      case "update":
+        updateSong(event);
+        break;
+      case "delete":
+        deleteSong(event);
+        break;
+      default:
+        break;
+    }
+  }
 
   function addNewSong(event) {
     event.preventDefault();
@@ -338,11 +364,11 @@ const MusicTable = (props) => {
     setNewRunningTime(newRunningTime.trim());
 
     if (
-      newTitle !== "" &&
-      newArtist !== "" &&
-      newAlbumName !== "" &&
-      newGenre !== "" &&
-      newReleaseDate !== "" &&
+      newTitle !== "" ||
+      newArtist !== "" ||
+      newAlbumName !== "" ||
+      newGenre !== "" ||
+      newReleaseDate !== "" ||
       newRunningTime !== ""
     ) {
       let song = {
@@ -368,9 +394,62 @@ const MusicTable = (props) => {
     }
   }
 
+  function updateSong(event) {
+    event.preventDefault();
+
+    if (
+      updateTitle !== "" ||
+      updateArist !== "" ||
+      updateAlbumnName !== "" ||
+      updateGenre !== "" ||
+      updateReleaseDate !== "" ||
+      updateRunningTime !== ""
+    ) {
+      let song = {
+        id: updateIndex,
+        artist: updateArist,
+        album: updateAlbumnName,
+        release_date: updateReleaseDate,
+        genre: updateGenre,
+        running_time: updateRunningTime,
+      };
+
+      let result = props.updateSong(song);
+
+      result.then((value) => {
+        setDisplayingUpdate(false);
+        setUpdateIndex(0);
+        setUpdateTitle("");
+        setUpdateAlbumName("");
+        setUpdateArtist("");
+        setUpdateGenre("");
+        setUpdateReleaseDate("");
+        setUpdateRunningTime("");
+        props.refreshSongList();
+      });
+    }
+  }
+
+  function deleteSong(event) {
+    event.preventDefault();
+    let songToDelete = updateIndex;
+    let result = props.deleteSong(songToDelete);
+    result.then((value) => {
+      setDisplayingUpdate(false);
+      setUpdateIndex(0);
+      setUpdateTitle("");
+      setUpdateAlbumName("");
+      setUpdateArtist("");
+      setUpdateGenre("");
+      setUpdateReleaseDate("");
+      setUpdateRunningTime("");
+      props.refreshSongList();
+    });
+  }
+
   function setSearchtoArtist(event) {
     const artist_select = document.getElementById("artist_select");
-    if (artist_select.value != "Artist")
+    if (artist_select.value !== "Artist")
       props.setSearchTerm(
         (props.searchTerm + ' +artist:"' + artist_select.value + '"').trim()
       );
@@ -378,14 +457,40 @@ const MusicTable = (props) => {
 
   function setSearchtoGenre(event) {
     const genre_select = document.getElementById("genre_select");
-    if (genre_select.value != "Genre")
+    if (genre_select.value !== "Genre")
       props.setSearchTerm(
         (props.searchTerm + ' +genre:"' + genre_select.value + '"').trim()
       );
   }
 
+  function changeRowToUpdate(event) {
+    let index = event.target.id;
+    if (index === "") {
+      //sometimes the event.target is a path instead of the icon itself
+      //and you can get the SVG from here
+      index = event.target.ownerSVGElement.id;
+    }
+    index = parseInt(index);
+    setUpdateIndex(index);
+    let song = getSongByID(index);
+
+    setDisplayingUpdate(true);
+    setUpdateTitle(song.title);
+    setUpdateAlbumName(song.album);
+    setUpdateArtist(song.artist);
+    setUpdateGenre(song.genre);
+    setUpdateReleaseDate(song.release_date);
+    setUpdateRunningTime(song.running_time);
+  }
+
+  function getSongByID(id) {
+    for (let i = 0; i < props.songs.length; i++)
+      if (props.songs[i].id === id) return props.songs[i];
+    return null;
+  }
+
   return (
-    <form onSubmit={addNewSong}>
+    <form onSubmit={handleSubmit}>
       <table id="MusicTable" className="table table-primary table-striped">
         <thead className="table-dark MusicTableHeader">
           <tr>
@@ -442,19 +547,96 @@ const MusicTable = (props) => {
             .map((song) => {
               calculated_runtime += song.running_time;
 
-              return (
-                <tr key={song.id}>
-                  <td>{song.title}</td>
-                  <td id={song.id + "_artist"}>{song.artist}</td>
-                  <td>{song.album}</td>
-                  <td>{formatDate(song.release_date)}</td>
-                  <td id={song.id + "_genre"}>{song.genre}</td>
-                  <td>{format_seconds(song.running_time)}</td>
-                  <td></td>
+              return updateIndex !== song.id ? (
+                <tr key={song.id} id={song.id}>
+                  <td id={song.title}>{song.title}</td>
+                  <td id={song.artist}>{song.artist}</td>
+                  <td id={song.album}>{song.album}</td>
+                  <td id={song.release_date}>
+                    {formatDate(song.release_date)}
+                  </td>
+                  <td id={song.genre}>{song.genre}</td>
+                  <td id={song.running_time}>
+                    {format_seconds(song.running_time)}
+                  </td>
+                  <td className="icon_TD">
+                    <EditIcon
+                      id={song.id}
+                      song_id={song.id}
+                      onClick={(event) => changeRowToUpdate(event)}
+                    />
+                  </td>
+                </tr>
+              ) : (
+                <tr key={song.id} id={song.id}>
+                  <td>
+                    <input
+                      id="updateTitle"
+                      type="text"
+                      value={updateTitle}
+                      required
+                      onChange={(event) => setUpdateTitle(event.target.value)}
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateArtist"
+                      value={updateArist}
+                      type="text"
+                      onChange={(event) => setUpdateArtist(event.target.value)}
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateAlbum"
+                      value={updateAlbumnName}
+                      type="text"
+                      onChange={(event) =>
+                        setUpdateAlbumName(event.target.value)
+                      }
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateReleaseDate"
+                      value={updateReleaseDate}
+                      type="date"
+                      onChange={(event) =>
+                        setUpdateReleaseDate(event.target.value)
+                      }
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateGenre"
+                      value={updateGenre}
+                      type="text"
+                      onChange={(event) => setUpdateGenre(event.target.value)}
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="UpdateRunTime"
+                      value={updateRunningTime}
+                      type="text"
+                      onChange={(event) =>
+                        setUpdateRunningTime(event.target.value)
+                      }
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <button value="update">Update</button>
+                    <button value="delete">Delete</button>
+                  </td>
                 </tr>
               );
             })}
-          {props.displayNewSongRow ? (
+          {props.displayNewSongRow && !displayingUpdate ? (
             <tr>
               <td>
                 <input
@@ -511,7 +693,11 @@ const MusicTable = (props) => {
                 ></input>
               </td>
               <td>
-                <button type="submit" className="btn btn-primary addButton">
+                <button
+                  type="submit"
+                  value="add"
+                  className="btn btn-primary addButton"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"

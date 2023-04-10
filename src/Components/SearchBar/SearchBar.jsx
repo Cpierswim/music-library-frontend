@@ -3,7 +3,6 @@ import "./SearchBar.css";
 
 const SearchBar = (props) => {
   function handleSubmit(event) {
-    let another = props.searchTerm;
     event.preventDefault();
     props.setFilterText(props.searchTerm.trim());
     props.searchTerm.trim() === ""

@@ -49,6 +49,21 @@ function App() {
     return response;
   }
 
+  async function updateSong(song) {
+    let response = await axios.put(
+      "http://127.0.0.1:5000/api/songs/" + song.id,
+      song
+    );
+    return response;
+  }
+
+  async function deleteSong(song_id) {
+    let response = await axios.delete(
+      "http://127.0.0.1:5000/api/songs/" + song_id
+    );
+    return response;
+  }
+
   return (
     <div className="App">
       <SearchBar
@@ -69,6 +84,8 @@ function App() {
         genreList={genreList}
         setSearchTerm={setSearchTerm}
         filterText={filterText}
+        updateSong={updateSong}
+        deleteSong={deleteSong}
       />
     </div>
   );
