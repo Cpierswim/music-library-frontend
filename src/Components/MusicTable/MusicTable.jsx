@@ -3,6 +3,7 @@ import "./MusicTable.css";
 import { useState } from "react";
 import { ReactComponent as EditIcon } from "./edit.svg";
 import { ReactComponent as CancelIcon } from "./cancel.svg";
+import { ReactComponent as DeleteIcon } from "./delete.svg";
 
 function formatDate(string) {
   let parts = string.split("-");
@@ -339,6 +340,7 @@ const MusicTable = (props) => {
   let calculated_runtime = 0;
 
   function handleSubmit(event) {
+    //debugger;
     let action = event.nativeEvent.submitter.value;
     switch (action) {
       case "add":
@@ -481,6 +483,7 @@ const MusicTable = (props) => {
   }
 
   function changeRowToUpdate(event) {
+    //debugger;
     let index = event.target.id;
     if (index === "") {
       //sometimes the event.target is a path instead of the icon itself
@@ -507,7 +510,7 @@ const MusicTable = (props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="containingForm" onSubmit={handleSubmit}>
       <table id="MusicTable" className="table table-primary table-striped">
         <thead className="table-dark MusicTableHeader">
           <tr>
@@ -576,7 +579,7 @@ const MusicTable = (props) => {
                   <td id={song.running_time}>
                     {format_seconds(song.running_time)}
                   </td>
-                  <td>
+                  <td className="regular_column">
                     <EditIcon
                       className="icon_TD"
                       id={song.id}
@@ -649,13 +652,13 @@ const MusicTable = (props) => {
                   </td>
                   <td className="buttonColumn">
                     <button className="btn btn-primary" value="update">
-                      Update
+                      <EditIcon />
                     </button>
-                    <button className="btn btn-primary" value="delete">
-                      Delete
-                    </button>
-                    <button className="btn btn-primary" value="cancel">
+                    <button className="btn btn-secondary" value="cancel">
                       <CancelIcon />
+                    </button>
+                    <button className="btn btn-danger" value="delete">
+                      <DeleteIcon />
                     </button>
                   </td>
                 </tr>

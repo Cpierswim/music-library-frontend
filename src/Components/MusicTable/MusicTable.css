@@ -2,10 +2,14 @@
   text-align: right;
 }
 
+.containingForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #MusicTable {
-  margin-left: 10%;
   width: 80%;
-  margin-right: 10%;
   margin-top: 10vh;
   border-radius: 15px 15px 0px 0px;
   border-collapse: collapse;
@@ -59,4 +63,9 @@
 .buttonColumn {
   display: flex;
   flex-wrap: nowrap;
+}
+
+.regular_column {
+  min-width: 126px;
+  min-height: 48px;
 }
