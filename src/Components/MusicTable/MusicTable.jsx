@@ -183,6 +183,7 @@ function filterBySearchTerm(song, searchString) {
       plusWordsResult.push(song.album.toLowerCase().includes(checkWord));
     } else if (plusWords[i].includes("+genre:")) {
       let checkWord = plusWords[i].replace("+genre:", "");
+      checkWord = checkWord.replace(/"/g, "");
       plusWordsResult.push(song.genre.toLowerCase().includes(checkWord));
       if (plusWordsResult === false) break;
     } else {
@@ -229,12 +230,14 @@ function filterBySearchTerm(song, searchString) {
   //if we hit a single false, the whole thing is false
   if (plusWordsResult.includes(false)) return false;
 
+  if (nonPlusWordsResult.length === 0) return true;
+
   //if we get here, all the plus words are found
   //now we look through the non plus words, and if a single true is found, the whole thing is true
   if (nonPlusWordsResult.includes(true)) return true;
 
   //if we got here, then all of the plus words are true, but none of the nonplus words are, so we return false
-  return true;
+  return false;
 }
 
 function getSpecialWord(searchString, specialWord) {
