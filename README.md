@@ -7,6 +7,8 @@
   - playlist length is determined on the front end
   - artist: and genre: will both have a lot of duplicates, so options are provided via dropdowns
 
+---
+
 - known issues
 
   - can only put in each special word once, so "genre:pop genre:indie" to include both of those does not work. Would be a quick fix, but I ran out of time
