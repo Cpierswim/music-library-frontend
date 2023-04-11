@@ -18,3 +18,5 @@
 ---
 
 NOTE - In order to do some of these newer features, I had to update the Music Library API. If you are going to clone this project, you are also going to [need to follow this link](https://github.com/Cpierswim/music_library) and clone that project too.
+
+Also - in that repository, use "chris-pierson-songs-database.sql" to create the database I was using.
