@@ -1,0 +1,18 @@
+.NavBar {
+  height: 9vh;
+  width: 100%;
+  background-color: #1c7c99;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: white;
+  font-size: x-large;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.nav_text {
+  margin-left: 2vw;
+  font-family: "Julius Sans One";
+  text-transform: uppercase;
+  margin-bottom: 0px;
+}

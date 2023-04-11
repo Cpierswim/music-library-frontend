@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import MusicTable from "./Components/MusicTable/MusicTable";
 import SearchBar from "./Components/SearchBar/SearchBar";
 import axios from "axios";
+import NavBar from "./Components/NavBar/NavBar";
 
 function App() {
   const [songs, setSongs] = useState([]);
@@ -66,6 +67,7 @@ function App() {
 
   return (
     <div className="App">
+      <NavBar />
       <SearchBar
         setSearchTerm={setSearchTerm}
         displayNewSongRow={displayNewSongRow}

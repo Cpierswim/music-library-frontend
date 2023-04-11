@@ -1,11 +1,22 @@
-.custom-width {
+.search_form_wrapper {
+  margin-left: auto;
+  margin-right: auto;
   width: 80%;
+  margin-top: 25px;
+  position: relative;
 }
 
-.inline {
-  display: flex;
+.search_bar {
+  border-radius: 50px;
+  padding-left: 20px !important;
 }
 
-.grow {
-  flex-grow: 8;
+.search_button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 58px;
+  border-radius: 50px;
+  padding-right: 30px;
+  padding-left: 30px;
 }
