@@ -15,4 +15,6 @@
   - the dropdowns don't look exactly like I'd like
   - when editing, the runtime has to be set to seconds instead of min:second like I would like because of issues with setting the value to a statful variable
 
-  NOTE - In order to do some of these newer features, I had to update the Music Library API. If you are going to clone this project, you are also going to [need to follow this link](https://github.com/Cpierswim/music_library) and clone that project too.
+---
+
+NOTE - In order to do some of these newer features, I had to update the Music Library API. If you are going to clone this project, you are also going to [need to follow this link](https://github.com/Cpierswim/music_library) and clone that project too.
