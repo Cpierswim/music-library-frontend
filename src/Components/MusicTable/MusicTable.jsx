@@ -103,7 +103,6 @@ function getSecondsFromString(timeString) {
 //-------------------------------------------
 function filterBySearchTerm(song, searchString) {
   if (searchString === "") return true;
-  //debugger; //do not put a degubber ahead of this.
   searchString = searchString.toLowerCase();
   let plusWords = [];
   let artistSpecial = getSpecialWord(searchString, "+artist");
@@ -343,7 +342,6 @@ const MusicTable = (props) => {
   let calculated_runtime = 0;
 
   function handleSubmit(event) {
-    //debugger;
     let action = event.nativeEvent.submitter.value;
     switch (action) {
       case "add":
@@ -486,7 +484,6 @@ const MusicTable = (props) => {
   }
 
   function changeRowToUpdate(event) {
-    //debugger;
     let index = event.target.id;
     if (index === "") {
       //sometimes the event.target is a path instead of the icon itself

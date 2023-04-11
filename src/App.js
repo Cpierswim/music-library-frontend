@@ -64,10 +64,6 @@ function App() {
     return response;
   }
 
-  function clearFilter() {
-    setFilterText("");
-  }
-
   return (
     <div className="App">
       <SearchBar
@@ -90,7 +86,6 @@ function App() {
         filterText={filterText}
         updateSong={updateSong}
         deleteSong={deleteSong}
-        clearFilter={clearFilter}
       />
     </div>
   );
