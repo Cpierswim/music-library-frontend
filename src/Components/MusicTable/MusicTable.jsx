@@ -105,25 +105,33 @@ function filterBySearchTerm(song, searchString) {
   if (searchString === "") return true;
   searchString = searchString.toLowerCase();
   let plusWords = [];
-  let artistSpecial = getSpecialWord(searchString, "+artist");
-  if (artistSpecial) {
-    searchString = removeFromSearchString(searchString, artistSpecial);
-    plusWords.push(artistSpecial);
+  while (searchString.includes("+artist:")) {
+    let artistSpecial = getSpecialWord(searchString, "+artist");
+    if (artistSpecial) {
+      searchString = removeFromSearchString(searchString, artistSpecial);
+      plusWords.push(artistSpecial);
+    }
   }
-  let titleSpecial = getSpecialWord(searchString, "+title");
-  if (titleSpecial) {
-    searchString = removeFromSearchString(searchString, titleSpecial);
-    plusWords.push(titleSpecial);
+  while (searchString.includes("+title:")) {
+    let titleSpecial = getSpecialWord(searchString, "+title");
+    if (titleSpecial) {
+      searchString = removeFromSearchString(searchString, titleSpecial);
+      plusWords.push(titleSpecial);
+    }
   }
-  let albumnSpecial = getSpecialWord(searchString, "+album");
-  if (albumnSpecial) {
-    searchString = removeFromSearchString(searchString, albumnSpecial);
-    plusWords.push(albumnSpecial);
+  while (searchString.includes("+album:")) {
+    let albumnSpecial = getSpecialWord(searchString, "+album");
+    if (albumnSpecial) {
+      searchString = removeFromSearchString(searchString, albumnSpecial);
+      plusWords.push(albumnSpecial);
+    }
   }
-  let genreSpecial = getSpecialWord(searchString, "+genre");
-  if (genreSpecial) {
-    searchString = removeFromSearchString(searchString, genreSpecial);
-    plusWords.push(genreSpecial);
+  while (searchString.includes("+genre:")) {
+    let genreSpecial = getSpecialWord(searchString, "+genre");
+    if (genreSpecial) {
+      searchString = removeFromSearchString(searchString, genreSpecial);
+      plusWords.push(genreSpecial);
+    }
   }
 
   let non_special_pluswords = getPlusWords(searchString);
@@ -139,25 +147,33 @@ function filterBySearchTerm(song, searchString) {
 
   //all must have words are now in pluswords, get the optional words
   let non_pluswords = [];
-  artistSpecial = getSpecialWord(searchString, "artist");
-  if (artistSpecial) {
-    searchString = removeFromSearchString(searchString, artistSpecial);
-    non_pluswords.push(artistSpecial);
+  while (searchString.includes("artist:")) {
+    let artistSpecial = getSpecialWord(searchString, "artist");
+    if (artistSpecial) {
+      searchString = removeFromSearchString(searchString, artistSpecial);
+      non_pluswords.push(artistSpecial);
+    }
   }
-  titleSpecial = getSpecialWord(searchString, "title");
-  if (titleSpecial) {
-    searchString = removeFromSearchString(searchString, titleSpecial);
-    non_pluswords.push(titleSpecial);
+  while (searchString.includes("title:")) {
+    let titleSpecial = getSpecialWord(searchString, "title");
+    if (titleSpecial) {
+      searchString = removeFromSearchString(searchString, titleSpecial);
+      non_pluswords.push(titleSpecial);
+    }
   }
-  albumnSpecial = getSpecialWord(searchString, "album");
-  if (albumnSpecial) {
-    searchString = removeFromSearchString(searchString, albumnSpecial);
-    non_pluswords.push(albumnSpecial);
+  while (searchString.includes("album:")) {
+    let albumnSpecial = getSpecialWord(searchString, "album");
+    if (albumnSpecial) {
+      searchString = removeFromSearchString(searchString, albumnSpecial);
+      non_pluswords.push(albumnSpecial);
+    }
   }
-  genreSpecial = getSpecialWord(searchString, "genre");
-  if (genreSpecial) {
-    searchString = removeFromSearchString(searchString, genreSpecial);
-    non_pluswords.push(genreSpecial);
+  while (searchString.includes("genre:")) {
+    let genreSpecial = getSpecialWord(searchString, "genre");
+    if (genreSpecial) {
+      searchString = removeFromSearchString(searchString, genreSpecial);
+      non_pluswords.push(genreSpecial);
+    }
   }
 
   let temp_non_pluswords = getNonPlusWords(searchString);

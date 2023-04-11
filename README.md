@@ -11,7 +11,7 @@
 
 - known issues
 
-  - can only put in each special word once, so "genre:pop genre:indie" to include both of those does not work. Would be a quick fix, but I ran out of time
+  - ~~can only put in each special word once, so "genre:pop genre:indie" to include both of those does not work. Would be a quick fix, but I ran out of time~~ (This was such an easy fix, I went ahead and fixed it after submitting)
   - the dropdowns don't look exactly like I'd like
   - when editing, the runtime has to be set to seconds instead of min:second like I would like because of issues with setting the value to a statful variable
 
