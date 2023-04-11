@@ -1,4 +1,4 @@
-- additional features:
+- additional features not in user stories:
 
   - Search
     - can put a + before something to force it to be in the result
