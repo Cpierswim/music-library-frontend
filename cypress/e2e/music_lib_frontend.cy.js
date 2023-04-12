@@ -34,6 +34,8 @@ describe("Music Library Frontend tests", () => {
     it("creates and displays the added new song", () => {
       cy.visit("http://localhost:3000");
       cy.wait(500);
+      cy.get("[data-test='searchBar']").type(`+artist:"${id} Artist"`);
+      cy.wait(50);
       cy.contains(`${id} Song`)
         .parent("tr")
         .within(() => {
