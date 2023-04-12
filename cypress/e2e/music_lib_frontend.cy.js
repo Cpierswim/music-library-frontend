@@ -52,9 +52,9 @@ describe("Music Library Frontend tests", () => {
         .parent("tr")
         .within(() => {
           cy.get("[data-test='icon_TD']").click();
-          cy.wait(50);
-          cy.get("[data-test='delete_button']").click();
         });
+      cy.wait(50);
+      cy.get("[data-test='delete_button']").click();
     });
   });
 });
