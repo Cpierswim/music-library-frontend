@@ -584,20 +584,41 @@ const MusicTable = (props) => {
               calculated_runtime += song.running_time;
 
               return updateIndex !== song.id ? (
-                <tr key={song.id} id={song.id}>
-                  <td id={song.title}>{song.title}</td>
-                  <td id={song.artist}>{song.artist}</td>
-                  <td id={song.album}>{song.album}</td>
-                  <td id={song.release_date}>
+                <tr key={song.id} id={song.id} data-test={song.id}>
+                  <td
+                    id={song.title.replace(" ", "_")}
+                    data-test={song.title.replace(" ", "_")}
+                  >
+                    {song.title}
+                  </td>
+                  <td
+                    id={song.artist.replace(" ", "_")}
+                    data-test={song.artist.replace(" ", "_")}
+                  >
+                    {song.artist}
+                  </td>
+                  <td
+                    id={song.album.replace(" ", "_")}
+                    data-test={song.album.replace(" ", "_")}
+                  >
+                    {song.album}
+                  </td>
+                  <td id={song.release_date} data-test={song.release_date}>
                     {formatDate(song.release_date)}
                   </td>
-                  <td id={song.genre}>{song.genre}</td>
-                  <td id={song.running_time}>
+                  <td
+                    id={song.genre.replace(" ", "_")}
+                    data-test={song.genre.replace(" ", "_")}
+                  >
+                    {song.genre}
+                  </td>
+                  <td id={song.running_time} data-test={song.running_time}>
                     {format_seconds(song.running_time)}
                   </td>
                   <td className="regular_column">
                     <EditIcon
                       className="icon_TD"
+                      data-test="icon_TD"
                       id={song.id}
                       song_id={song.id}
                       onClick={(event) => changeRowToUpdate(event)}
@@ -673,7 +694,11 @@ const MusicTable = (props) => {
                     <button className="btn btn-secondary" value="cancel">
                       <CancelIcon />
                     </button>
-                    <button className="btn btn-danger" value="delete">
+                    <button
+                      data-test="delete_button"
+                      className="btn btn-danger"
+                      value="delete"
+                    >
                       <DeleteIcon />
                     </button>
                   </td>

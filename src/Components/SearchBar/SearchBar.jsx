@@ -19,6 +19,7 @@ const SearchBar = (props) => {
               type="text"
               className="form-control search_bar"
               id="floatingInput_searchbar"
+              data-test="searchBar"
               placeholder="Search"
               value={props.searchTerm}
               onChange={(event) => props.setSearchTerm(event.target.value)}
