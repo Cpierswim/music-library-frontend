@@ -685,6 +685,7 @@ const MusicTable = (props) => {
               <td>
                 <input
                   id="newTitle"
+                  data-test="newTitle"
                   value={newTitle}
                   type="text"
                   onChange={(event) => setNewTitle(event.target.value)}
@@ -694,6 +695,7 @@ const MusicTable = (props) => {
               <td>
                 <input
                   id="newArtist"
+                  data-test="newArtist"
                   value={newArtist}
                   type="text"
                   onChange={(event) => setNewArtist(event.target.value)}
@@ -703,6 +705,7 @@ const MusicTable = (props) => {
               <td>
                 <input
                   id="newAlbum"
+                  data-test="newAlbum"
                   value={newAlbumName}
                   type="text"
                   onChange={(event) => setNewAlbumName(event.target.value)}
@@ -712,6 +715,7 @@ const MusicTable = (props) => {
               <td>
                 <input
                   id="newReleaseDate"
+                  data-test="newReleaseDate"
                   value={newReleaseDate}
                   type="date"
                   onChange={(event) => setNewReleaseDate(event.target.value)}
@@ -721,6 +725,7 @@ const MusicTable = (props) => {
               <td>
                 <input
                   id="newGenre"
+                  data-test="newGenre"
                   value={newGenre}
                   type="text"
                   onChange={(event) => setNewGenre(event.target.value)}
@@ -730,6 +735,7 @@ const MusicTable = (props) => {
               <td>
                 <input
                   id="newRunTime"
+                  data-test="newRunTime"
                   value={newRunningTime}
                   type="text"
                   onChange={(event) => setNewRunningTime(event.target.value)}
@@ -738,6 +744,8 @@ const MusicTable = (props) => {
               </td>
               <td>
                 <button
+                  id="submitNew"
+                  data-test="submitNew"
                   type="submit"
                   value="add"
                   className="btn btn-primary addButton"
