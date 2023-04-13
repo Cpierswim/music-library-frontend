@@ -354,6 +354,7 @@ const MusicTable = (props) => {
   const [updateGenre, setUpdateGenre] = useState("");
   const [updateReleaseDate, setUpdateReleaseDate] = useState("");
   const [updateRunningTime, setUpdateRunningTime] = useState("");
+  const [tempRunTime, setTempRunTime] = useState("0:00");
 
   let calculated_runtime = 0;
 
@@ -426,15 +427,16 @@ const MusicTable = (props) => {
       updateAlbumnName !== "" ||
       updateGenre !== "" ||
       updateReleaseDate !== "" ||
-      updateRunningTime !== ""
+      tempRunTime !== ""
     ) {
+      let seconds = getSecondsFromString(tempRunTime);
       let song = {
         id: updateIndex,
         artist: updateArist,
         album: updateAlbumnName,
         release_date: updateReleaseDate,
         genre: updateGenre,
-        running_time: updateRunningTime,
+        running_time: seconds,
       };
 
       let result = props.updateSong(song);
@@ -448,6 +450,7 @@ const MusicTable = (props) => {
         setUpdateGenre("");
         setUpdateReleaseDate("");
         setUpdateRunningTime("");
+        setTempRunTime("0:00");
         props.refreshSongList();
       });
     }
@@ -517,6 +520,7 @@ const MusicTable = (props) => {
     setUpdateGenre(song.genre);
     setUpdateReleaseDate(song.release_date);
     setUpdateRunningTime(song.running_time);
+    setTempRunTime(format_seconds(song.running_time));
   }
 
   function getSongByID(id) {
@@ -679,11 +683,9 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="UpdateRunTime"
-                      value={updateRunningTime}
+                      value={tempRunTime}
                       type="text"
-                      onChange={(event) =>
-                        setUpdateRunningTime(event.target.value)
-                      }
+                      onChange={(event) => setTempRunTime(event.target.value)}
                       required
                     ></input>
                   </td>
