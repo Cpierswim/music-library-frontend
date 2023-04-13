@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ReactComponent as EditIcon } from "./edit.svg";
 import { ReactComponent as CancelIcon } from "./cancel.svg";
 import { ReactComponent as DeleteIcon } from "./delete.svg";
-import { Modal } from "bootstrap";
 
 function formatDate(string) {
   let parts = string.split("-");
@@ -84,25 +83,18 @@ function format_seconds(seconds) {
 }
 
 function getSecondsFromString(timeString) {
-  try {
-    //debugger;
-    let split = timeString.split(":");
-    let minutes = 0;
-    let seconds = 0;
-    if (split.length === 2) {
-      minutes = parseInt(split[0]);
-      seconds = parseInt(split[1]);
-      seconds += minutes * 60;
-    } else if (split.length === 1) {
-      seconds = parseInt(split[0]);
-    }
-
-    if (isNaN(seconds)) return -1;
-
-    return seconds;
-  } catch {
-    return -1;
+  let split = timeString.split(":");
+  let minutes = 0;
+  let seconds = 0;
+  if (split.length === 2) {
+    minutes = parseInt(split[0]);
+    seconds = parseInt(split[1]);
+    seconds += minutes * 60;
+  } else if (split.length === 1) {
+    seconds = parseInt(split[0]);
   }
+
+  return seconds;
 }
 
 //-------------------------------------------
@@ -365,14 +357,13 @@ const MusicTable = (props) => {
   const [tempRunTime, setTempRunTime] = useState("0:00");
 
   let calculated_runtime = 0;
-  debugger;
 
   function handleSubmit(event) {
-    //debugger;
     let action = event.nativeEvent.submitter.value;
     switch (action) {
       case "add":
-        return addNewSong(event);
+        addNewSong(event);
+        break;
       case "update":
         updateSong(event);
         break;
@@ -383,13 +374,12 @@ const MusicTable = (props) => {
         cancelUpdate(event);
         break;
       default:
-        return false;
+        break;
     }
   }
 
   function addNewSong(event) {
     event.preventDefault();
-    //debugger;
     setNewTitle(newTitle.trim());
     setNewAlbumName(newAlbumName.trim());
     setNewArtist(newArtist.trim());
@@ -398,13 +388,12 @@ const MusicTable = (props) => {
     setNewRunningTime(newRunningTime.trim());
 
     if (
-      newTitle !== "" &&
-      newArtist !== "" &&
-      newAlbumName !== "" &&
-      newGenre !== "" &&
-      newReleaseDate !== "" &&
-      newRunningTime !== "" &&
-      getSecondsFromString(newRunningTime) !== -1
+      newTitle !== "" ||
+      newArtist !== "" ||
+      newAlbumName !== "" ||
+      newGenre !== "" ||
+      newReleaseDate !== "" ||
+      newRunningTime !== ""
     ) {
       let song = {
         title: newTitle,
@@ -425,34 +414,8 @@ const MusicTable = (props) => {
         setNewReleaseDate("");
         setNewRunningTime("");
         props.refreshSongList();
-
-        return true;
       });
-    } else {
-      //client size validation
-
-      let errors = [];
-      newTitle == "" && errors.push("The title cannot be blank");
-      newArtist == "" && errors.push("The artist cannot be blank");
-      newAlbumName == "" && errors.push("The album name cannot be blank");
-      newReleaseDate == "" && errors.push("The release date cannot be blank");
-      newGenre == "" && errors.push("The genre cannot be blank");
-      newRunningTime == "" && errors.push("The run time cannot be blank");
-      if (getSecondsFromString(newRunningTime) == -1) {
-        errors.push(
-          "The running time was not recognized. Please put in MM:SS (minutes:seconds) format"
-        );
-        setNewRunningTime("0");
-      }
-
-      insertErrorModal.show();
-
-      return false;
     }
-  }
-
-  function closeNewSongErrorModal() {
-    insertErrorModal.hide();
   }
 
   function updateSong(event) {
@@ -567,325 +530,278 @@ const MusicTable = (props) => {
   }
 
   return (
-    <div>
-      <form className="containingForm" onSubmit={handleSubmit}>
-        <table id="MusicTable" className="table table-primary table-striped">
-          <thead className="table-dark MusicTableHeader">
-            <tr>
-              <td>Title</td>
-              <td>
-                <select
-                  defaultValue={"Artist"}
-                  id="artist_select"
-                  onChange={setSearchtoArtist}
-                  className="form-select header_dropdown"
-                  aria-label="Artist Select"
-                >
-                  <option value="Artist">Artist</option>
-                  {props.artistList.map((artist) => {
-                    return (
-                      <option
-                        key={artist}
-                        className="dropdown_item"
-                        value={artist}
-                      >
-                        {artist}
-                      </option>
-                    );
-                  })}
-                </select>
-              </td>
-              <td>Album</td>
-              <td>Release Date</td>
-              <td>
-                <select
-                  defaultValue={"Genre"}
-                  id="genre_select"
-                  onChange={setSearchtoGenre}
-                  className="form-select header_dropdown"
-                  aria-label="Genre Select"
-                >
-                  <option value="Genre">Genre</option>
-                  {props.genreList.map((genre) => {
-                    return (
-                      <option
-                        key={genre}
-                        className="dropdown_item"
-                        value={genre}
-                      >
-                        {genre}
-                      </option>
-                    );
-                  })}
-                </select>
-              </td>
-              <td>Run Time</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody id="songsList">
-            {props.songs
-              .filter((song) => filterBySearchTerm(song, props.filterText))
-              .map((song) => {
-                calculated_runtime += song.running_time;
+    <form className="containingForm" onSubmit={handleSubmit}>
+      <table id="MusicTable" className="table table-primary table-striped">
+        <thead className="table-dark MusicTableHeader">
+          <tr>
+            <td>Title</td>
+            <td>
+              <select
+                defaultValue={"Artist"}
+                id="artist_select"
+                onChange={setSearchtoArtist}
+                className="form-select header_dropdown"
+                aria-label="Artist Select"
+              >
+                <option value="Artist">Artist</option>
+                {props.artistList.map((artist) => {
+                  return (
+                    <option
+                      key={artist}
+                      className="dropdown_item"
+                      value={artist}
+                    >
+                      {artist}
+                    </option>
+                  );
+                })}
+              </select>
+            </td>
+            <td>Album</td>
+            <td>Release Date</td>
+            <td>
+              <select
+                defaultValue={"Genre"}
+                id="genre_select"
+                onChange={setSearchtoGenre}
+                className="form-select header_dropdown"
+                aria-label="Genre Select"
+              >
+                <option value="Genre">Genre</option>
+                {props.genreList.map((genre) => {
+                  return (
+                    <option key={genre} className="dropdown_item" value={genre}>
+                      {genre}
+                    </option>
+                  );
+                })}
+              </select>
+            </td>
+            <td>Run Time</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody id="songsList">
+          {props.songs
+            .filter((song) => filterBySearchTerm(song, props.filterText))
+            .map((song) => {
+              calculated_runtime += song.running_time;
 
-                return updateIndex !== song.id ? (
-                  <tr key={song.id} id={song.id} data-test={song.id}>
-                    <td
-                      id={song.title.replace(" ", "_")}
-                      data-test={song.title.replace(" ", "_")}
-                    >
-                      {song.title}
-                    </td>
-                    <td
-                      id={song.artist.replace(" ", "_")}
-                      data-test={song.artist.replace(" ", "_")}
-                    >
-                      {song.artist}
-                    </td>
-                    <td
-                      id={song.album.replace(" ", "_")}
-                      data-test={song.album.replace(" ", "_")}
-                    >
-                      {song.album}
-                    </td>
-                    <td id={song.release_date} data-test={song.release_date}>
-                      {formatDate(song.release_date)}
-                    </td>
-                    <td
-                      id={song.genre.replace(" ", "_")}
-                      data-test={song.genre.replace(" ", "_")}
-                    >
-                      {song.genre}
-                    </td>
-                    <td id={song.running_time} data-test={song.running_time}>
-                      {format_seconds(song.running_time)}
-                    </td>
-                    <td className="regular_column">
-                      <EditIcon
-                        className="icon_TD"
-                        data-test="icon_TD"
-                        id={song.id}
-                        song_id={song.id}
-                        onClick={(event) => changeRowToUpdate(event)}
-                      />
-                    </td>
-                  </tr>
-                ) : (
-                  <tr key={song.id} id={song.id}>
-                    <td>
-                      <input
-                        id="updateTitle"
-                        type="text"
-                        value={updateTitle}
-                        required
-                        onChange={(event) => setUpdateTitle(event.target.value)}
-                      ></input>
-                    </td>
-                    <td>
-                      <input
-                        id="updateArtist"
-                        value={updateArist}
-                        type="text"
-                        onChange={(event) =>
-                          setUpdateArtist(event.target.value)
-                        }
-                        required
-                      ></input>
-                    </td>
-                    <td>
-                      <input
-                        id="updateAlbum"
-                        value={updateAlbumnName}
-                        type="text"
-                        onChange={(event) =>
-                          setUpdateAlbumName(event.target.value)
-                        }
-                        required
-                      ></input>
-                    </td>
-                    <td>
-                      <input
-                        id="updateReleaseDate"
-                        value={updateReleaseDate}
-                        type="date"
-                        onChange={(event) =>
-                          setUpdateReleaseDate(event.target.value)
-                        }
-                        required
-                      ></input>
-                    </td>
-                    <td>
-                      <input
-                        id="updateGenre"
-                        value={updateGenre}
-                        type="text"
-                        onChange={(event) => setUpdateGenre(event.target.value)}
-                        required
-                      ></input>
-                    </td>
-                    <td>
-                      <input
-                        id="UpdateRunTime"
-                        value={tempRunTime}
-                        type="text"
-                        onChange={(event) => setTempRunTime(event.target.value)}
-                        required
-                      ></input>
-                    </td>
-                    <td className="buttonColumn">
-                      <button className="btn btn-primary" value="update">
-                        <EditIcon />
-                      </button>
-                      <button className="btn btn-secondary" value="cancel">
-                        <CancelIcon />
-                      </button>
-                      <button
-                        data-test="delete_button"
-                        className="btn btn-danger"
-                        value="delete"
-                      >
-                        <DeleteIcon />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            {props.displayNewSongRow && !displayingUpdate ? (
-              <tr>
-                <td>
-                  <input
-                    id="newTitle"
-                    data-test="newTitle"
-                    value={newTitle}
-                    type="text"
-                    onChange={(event) => setNewTitle(event.target.value)}
-                    required
-                  ></input>
-                </td>
-                <td>
-                  <input
-                    id="newArtist"
-                    data-test="newArtist"
-                    value={newArtist}
-                    type="text"
-                    onChange={(event) => setNewArtist(event.target.value)}
-                    required
-                  ></input>
-                </td>
-                <td>
-                  <input
-                    id="newAlbum"
-                    data-test="newAlbum"
-                    value={newAlbumName}
-                    type="text"
-                    onChange={(event) => setNewAlbumName(event.target.value)}
-                    required
-                  ></input>
-                </td>
-                <td>
-                  <input
-                    id="newReleaseDate"
-                    data-test="newReleaseDate"
-                    value={newReleaseDate}
-                    type="date"
-                    onChange={(event) => setNewReleaseDate(event.target.value)}
-                    required
-                  ></input>
-                </td>
-                <td>
-                  <input
-                    id="newGenre"
-                    data-test="newGenre"
-                    value={newGenre}
-                    type="text"
-                    onChange={(event) => setNewGenre(event.target.value)}
-                    required
-                  ></input>
-                </td>
-                <td>
-                  <input
-                    id="newRunTime"
-                    data-test="newRunTime"
-                    value={newRunningTime}
-                    type="text"
-                    onChange={(event) => setNewRunningTime(event.target.value)}
-                    required
-                  ></input>
-                </td>
-                <td>
-                  <button
-                    id="submitNew"
-                    data-test="submitNew"
-                    type="submit"
-                    value="add"
-                    className="btn btn-primary addButton"
+              return updateIndex !== song.id ? (
+                <tr key={song.id} id={song.id} data-test={song.id}>
+                  <td
+                    id={song.title.replace(" ", "_")}
+                    data-test={song.title.replace(" ", "_")}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-file-earmark-plus"
-                      viewBox="0 0 16 16"
+                    {song.title}
+                  </td>
+                  <td
+                    id={song.artist.replace(" ", "_")}
+                    data-test={song.artist.replace(" ", "_")}
+                  >
+                    {song.artist}
+                  </td>
+                  <td
+                    id={song.album.replace(" ", "_")}
+                    data-test={song.album.replace(" ", "_")}
+                  >
+                    {song.album}
+                  </td>
+                  <td id={song.release_date} data-test={song.release_date}>
+                    {formatDate(song.release_date)}
+                  </td>
+                  <td
+                    id={song.genre.replace(" ", "_")}
+                    data-test={song.genre.replace(" ", "_")}
+                  >
+                    {song.genre}
+                  </td>
+                  <td id={song.running_time} data-test={song.running_time}>
+                    {format_seconds(song.running_time)}
+                  </td>
+                  <td className="regular_column">
+                    <EditIcon
+                      className="icon_TD"
+                      data-test="icon_TD"
+                      id={song.id}
+                      song_id={song.id}
+                      onClick={(event) => changeRowToUpdate(event)}
+                    />
+                  </td>
+                </tr>
+              ) : (
+                <tr key={song.id} id={song.id}>
+                  <td>
+                    <input
+                      id="updateTitle"
+                      type="text"
+                      value={updateTitle}
+                      required
+                      onChange={(event) => setUpdateTitle(event.target.value)}
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateArtist"
+                      value={updateArist}
+                      type="text"
+                      onChange={(event) => setUpdateArtist(event.target.value)}
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateAlbum"
+                      value={updateAlbumnName}
+                      type="text"
+                      onChange={(event) =>
+                        setUpdateAlbumName(event.target.value)
+                      }
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateReleaseDate"
+                      value={updateReleaseDate}
+                      type="date"
+                      onChange={(event) =>
+                        setUpdateReleaseDate(event.target.value)
+                      }
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="updateGenre"
+                      value={updateGenre}
+                      type="text"
+                      onChange={(event) => setUpdateGenre(event.target.value)}
+                      required
+                    ></input>
+                  </td>
+                  <td>
+                    <input
+                      id="UpdateRunTime"
+                      value={tempRunTime}
+                      type="text"
+                      onChange={(event) => setTempRunTime(event.target.value)}
+                      required
+                    ></input>
+                  </td>
+                  <td className="buttonColumn">
+                    <button className="btn btn-primary" value="update">
+                      <EditIcon />
+                    </button>
+                    <button className="btn btn-secondary" value="cancel">
+                      <CancelIcon />
+                    </button>
+                    <button
+                      data-test="delete_button"
+                      className="btn btn-danger"
+                      value="delete"
                     >
-                      <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"></path>
-                      <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"></path>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-          <tfoot className="table-dark">
+                      <DeleteIcon />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          {props.displayNewSongRow && !displayingUpdate ? (
             <tr>
-              <td colSpan={7}>
-                Total Playtime: {format_seconds(calculated_runtime)}
+              <td>
+                <input
+                  id="newTitle"
+                  data-test="newTitle"
+                  value={newTitle}
+                  type="text"
+                  onChange={(event) => setNewTitle(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newArtist"
+                  data-test="newArtist"
+                  value={newArtist}
+                  type="text"
+                  onChange={(event) => setNewArtist(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newAlbum"
+                  data-test="newAlbum"
+                  value={newAlbumName}
+                  type="text"
+                  onChange={(event) => setNewAlbumName(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newReleaseDate"
+                  data-test="newReleaseDate"
+                  value={newReleaseDate}
+                  type="date"
+                  onChange={(event) => setNewReleaseDate(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newGenre"
+                  data-test="newGenre"
+                  value={newGenre}
+                  type="text"
+                  onChange={(event) => setNewGenre(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
+                <input
+                  id="newRunTime"
+                  data-test="newRunTime"
+                  value={newRunningTime}
+                  type="text"
+                  onChange={(event) => setNewRunningTime(event.target.value)}
+                  required
+                ></input>
+              </td>
+              <td>
+                <button
+                  id="submitNew"
+                  data-test="submitNew"
+                  type="submit"
+                  value="add"
+                  className="btn btn-primary addButton"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-file-earmark-plus"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"></path>
+                    <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"></path>
+                  </svg>
+                </button>
               </td>
             </tr>
-          </tfoot>
-        </table>
-      </form>
-      <div
-        className="modal fade"
-        id="insertErrorModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="insertErrorModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="insertErrorModalLabel">
-                Error Inserting Song
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              This is where the error message goes
-            </div>
-            <div className="modal-footer">
-              <button
-                onClick={closeNewSongErrorModal}
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          ) : null}
+        </tbody>
+        <tfoot className="table-dark">
+          <tr>
+            <td colSpan={7}>
+              Total Playtime: {format_seconds(calculated_runtime)}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </form>
   );
 };
 
