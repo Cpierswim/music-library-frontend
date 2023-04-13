@@ -432,6 +432,7 @@ const MusicTable = (props) => {
       let seconds = getSecondsFromString(tempRunTime);
       let song = {
         id: updateIndex,
+        title: updateTitle,
         artist: updateArist,
         album: updateAlbumnName,
         release_date: updateReleaseDate,
@@ -634,6 +635,7 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="updateTitle"
+                      data-test="update_title_input"
                       type="text"
                       value={updateTitle}
                       required
@@ -643,6 +645,7 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="updateArtist"
+                      data-test="update_artist_input"
                       value={updateArist}
                       type="text"
                       onChange={(event) => setUpdateArtist(event.target.value)}
@@ -652,6 +655,7 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="updateAlbum"
+                      data-test="update_album_input"
                       value={updateAlbumnName}
                       type="text"
                       onChange={(event) =>
@@ -663,6 +667,7 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="updateReleaseDate"
+                      data-test="update_releaseDate_input"
                       value={updateReleaseDate}
                       type="date"
                       onChange={(event) =>
@@ -674,6 +679,7 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="updateGenre"
+                      data-test="update_genre_input"
                       value={updateGenre}
                       type="text"
                       onChange={(event) => setUpdateGenre(event.target.value)}
@@ -683,6 +689,7 @@ const MusicTable = (props) => {
                   <td>
                     <input
                       id="UpdateRunTime"
+                      data-test="update_runTime_input"
                       value={tempRunTime}
                       type="text"
                       onChange={(event) => setTempRunTime(event.target.value)}
@@ -690,7 +697,11 @@ const MusicTable = (props) => {
                     ></input>
                   </td>
                   <td className="buttonColumn">
-                    <button className="btn btn-primary" value="update">
+                    <button
+                      className="btn btn-primary"
+                      value="update"
+                      data-test="update_button"
+                    >
                       <EditIcon />
                     </button>
                     <button className="btn btn-secondary" value="cancel">

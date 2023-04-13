@@ -26,7 +26,11 @@ const SearchBar = (props) => {
             />
             <label htmlFor="floatingInput_searchbar">Search</label>
           </div>
-          <button type="submit" className="btn btn-primary search_button">
+          <button
+            type="submit"
+            className="btn btn-primary search_button"
+            data-test="search_button"
+          >
             Search
           </button>
         </div>
